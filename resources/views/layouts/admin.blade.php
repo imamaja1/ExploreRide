@@ -18,7 +18,8 @@
         .sidebar a.active { border-left-color: #22c55e; background-color: rgba(255,255,255,0.12); color: white; font-weight: 600; }
         .sidebar a i { margin-right: 10px; width: 20px; text-align: center; }
         .content-area { background-color: #f0f2f5; min-height: calc(100vh - 56px); }
-        .card { border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-radius: 10px; }
+        .card { border: none; box-shadow: 0 1px 3px rgba(0,0,0,0.06); border-radius: 10px; transition: box-shadow 0.2s; }
+        .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
         .card-header { background: #198754; color: #fff; font-weight: 600; padding: 12px 20px; border: 0; border-radius: 10px 10px 0 0 !important; }
 
         .table thead th { background: #198754; color: #fff; font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; border: 0; padding: 12px 16px; }
@@ -34,8 +35,8 @@
         .form-control, .form-select { border-radius: 8px; border: 1.5px solid #e5e7eb; padding: 10px 14px; transition: all 0.2s; font-size: 0.9rem; }
         .form-control:focus, .form-select:focus { border-color: #198754; box-shadow: 0 0 0 3px rgba(25,135,84,0.12); }
 
-        .btn { border-radius: 8px; font-weight: 500; padding: 8px 18px; transition: all 0.2s; font-size: 0.875rem; }
-        .btn-sm { border-radius: 6px; padding: 4px 12px; font-size: 0.8rem; }
+        .btn { border-radius: 8px; font-weight: 500; padding: 10px 22px; transition: all 0.2s; font-size: 0.875rem; }
+        .btn-sm { border-radius: 6px; padding: 8px 16px; font-size: 0.8rem; }
         .btn-success { background: #198754; border-color: #198754; }
         .btn-success:hover { background: #145c32; border-color: #145c32; }
 
@@ -43,7 +44,7 @@
         .page-item.active .page-link { background: #198754 !important; border-color: #198754 !important; color: #fff; }
         .page-item.disabled .page-link { background: transparent; color: #ccc; }
 
-        .page-title { font-weight: 700; font-size: 1.25rem; margin-bottom: 0; }
+        .page-title { font-weight: 700; font-size: 1.25rem; margin-bottom: 0; color: #1f2937; }
         .page-title-border { border-bottom: 2px solid #198754; padding-bottom: 10px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
 
         .stat-card { border-radius: 12px; padding: 20px; }
@@ -53,6 +54,11 @@
         .navbar .nav-item.dropdown { position: relative; }
 
         .pagination { gap: 2px; }
+
+        .btn-success-er { background: #198754; border-color: #198754; color: #fff; border-radius: 8px; padding: 8px 18px; font-weight: 500; transition: all 0.2s; }
+        .btn-success-er:hover { background: #145c32; border-color: #145c32; color: #fff; }
+
+        .input-group-text { border-color: #e5e7eb; }
     </style>
     @stack('styles')
 </head>

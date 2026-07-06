@@ -9,9 +9,21 @@ use Illuminate\Support\Facades\Hash;
 
 class DriverController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $drivers = User::where('role', 'driver')->orderBy('created_at', 'desc')->paginate(10);
+        $drivers = User::where('role', 'driver');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $drivers->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('plate_number', 'like', "%{$search}%");
+            });
+        }
+
+        $drivers = $drivers->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('admin.drivers.index', compact('drivers'));
     }
 

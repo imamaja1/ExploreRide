@@ -7,9 +7,9 @@
 <div class="card"><div class="card-body">
 <form method="POST" action="{{ route('admin.banks.store') }}" enctype="multipart/form-data">@csrf
 <div class="row g-3">
-    <div class="col-md-4"><label class="form-label">{{ __('Nama Bank') }}</label><input type="text" name="name" class="form-control" required></div>
-    <div class="col-md-4"><label class="form-label">{{ __('No. Rekening') }}</label><input type="text" name="account_number" class="form-control" required></div>
-    <div class="col-md-4"><label class="form-label">{{ __('Atas Nama') }}</label><input type="text" name="account_name" class="form-control" required></div>
+    <div class="col-md-4"><label class="form-label">{{ __('Nama Bank') }}</label><input type="text" name="name" class="form-control" value="{{ old('name') }}" required></div>
+    <div class="col-md-4"><label class="form-label">{{ __('No. Rekening') }}</label><input type="text" name="account_number" class="form-control" value="{{ old('account_number') }}" required></div>
+    <div class="col-md-4"><label class="form-label">{{ __('Atas Nama') }}</label><input type="text" name="account_name" class="form-control" value="{{ old('account_name') }}" required></div>
     <div class="col-md-4"><label class="form-label">{{ __('Logo') }}</label><input type="file" name="logo" class="form-control" accept="image/*"></div>
     <div class="col-md-4 d-flex align-items-end pb-2">
         <div class="form-check">

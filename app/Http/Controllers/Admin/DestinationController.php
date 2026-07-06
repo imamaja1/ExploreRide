@@ -10,9 +10,19 @@ use Illuminate\Support\Str;
 
 class DestinationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $destinations = Destination::latest()->paginate(15);
+        $destinations = Destination::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $destinations->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%");
+            });
+        }
+
+        $destinations = $destinations->latest()->paginate(15)->withQueryString();
         return view('admin.destinations.index', compact('destinations'));
     }
 
@@ -24,8 +34,7 @@ class DestinationController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:destinations,slug',
+            'name' => 'required|string|max:255|unique:destinations,name',
             'category' => 'required|in:pantai,gunung,air-terjun',
             'location' => 'required|string|max:255',
             'rating' => 'required|numeric|min:0|max:5',
@@ -35,6 +44,7 @@ class DestinationController extends Controller
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['slug'] = $this->generateUniqueSlug($request->name);
 
         if ($request->hasFile('main_photo')) {
             $data['main_photo'] = $request->file('main_photo')->store('destinations', 'public');
@@ -54,8 +64,7 @@ class DestinationController extends Controller
     public function update(Request $request, Destination $destination)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:destinations,slug,' . $destination->id,
+            'name' => 'required|string|max:255|unique:destinations,name,' . $destination->id,
             'category' => 'required|in:pantai,gunung,air-terjun',
             'location' => 'required|string|max:255',
             'rating' => 'required|numeric|min:0|max:5',
@@ -65,6 +74,7 @@ class DestinationController extends Controller
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['slug'] = $this->generateUniqueSlug($request->name, $destination->id);
 
         if ($request->hasFile('main_photo')) {
             if ($destination->main_photo) {
@@ -77,6 +87,25 @@ class DestinationController extends Controller
 
         return redirect()->route('admin.destinations.index')
             ->with('success', __('Destinasi berhasil diupdate!'));
+    }
+
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $base = $slug;
+        $counter = 1;
+        $query = Destination::where('slug', $slug);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+        while ($query->exists()) {
+            $slug = $base . '-' . $counter++;
+            $query = Destination::where('slug', $slug);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+        }
+        return $slug;
     }
 
     public function destroy(Destination $destination)

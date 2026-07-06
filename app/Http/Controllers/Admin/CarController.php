@@ -8,9 +8,20 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $cars = Car::orderBy('created_at', 'desc')->paginate(10);
+        $cars = Car::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $cars->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('brand', 'like', "%{$search}%")
+                  ->orWhere('plate_number', 'like', "%{$search}%");
+            });
+        }
+
+        $cars = $cars->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('admin.cars.index', compact('cars'));
     }
 

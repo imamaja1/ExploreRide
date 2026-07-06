@@ -3,8 +3,14 @@
 @section('content')
 <div class="page-title-border">
     <h4 class="page-title">{{ __('Kategori Destinasi') }}</h4>
-    <a href="{{ route('admin.destination-categories.create') }}" class="btn btn-success"><i class="bi bi-plus-lg"></i> {{ __('Tambah Kategori') }}</a>
 </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a href="{{ route('admin.destination-categories.create') }}" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> {{ __('Tambah Kategori') }}</a>
+    </div>
+    <div></div>
+</div>
+
 <div class="card"><div class="card-body p-0">
 <div class="table-responsive">
 <table class="table table-hover mb-0">
@@ -12,7 +18,7 @@
         <tr><th>{{ __('No') }}</th><th>{{ __('Nama') }}</th><th>{{ __('Slug') }}</th><th>{{ __('Status') }}</th><th>{{ __('Aksi') }}</th></tr>
     </thead>
     <tbody>
-        @foreach($categories as $c)
+        @forelse($categories as $c)
         <tr>
             <td>{{ $loop->iteration }}</td>
             <td class="fw-bold">{{ $c->name }}</td>
@@ -31,7 +37,16 @@
                 </form>
             </td>
         </tr>
-        @endforeach
+        @empty
+        <tr>
+            <td colspan="5" class="text-center py-5">
+                <div class="d-flex flex-column align-items-center">
+                    <i class="bi bi-inbox text-muted" style="font-size:3rem;opacity:0.4;"></i>
+                    <p class="text-muted mt-2 mb-0">{{ __('Belum ada kategori destinasi') }}</p>
+                </div>
+            </td>
+        </tr>
+        @endforelse
     </tbody>
 </table>
 </div></div></div>

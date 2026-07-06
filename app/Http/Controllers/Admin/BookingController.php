@@ -11,11 +11,25 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $bookings = Booking::with(['customer', 'car', 'service', 'driver'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(15);
+        $bookings = Booking::with(['customer', 'car', 'service', 'driver']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $bookings->where(function($q) use ($search) {
+                $q->where('booking_code', 'like', "%{$search}%")
+                  ->orWhereHas('customer', function($q2) use ($search) {
+                      $q2->where('name', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $bookings->where('status', $request->status);
+        }
+
+        $bookings = $bookings->orderBy('created_at', 'desc')->paginate(15)->withQueryString();
 
         $statuses = ['pending', 'waiting_payment', 'confirmed', 'in_progress', 'completed', 'cancelled'];
 

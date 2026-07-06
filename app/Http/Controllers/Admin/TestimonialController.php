@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Storage;
 
 class TestimonialController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $testimonials = Testimonial::with('customer')->latest()->paginate(15);
+        $testimonials = Testimonial::with('customer');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $testimonials->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('message', 'like', "%{$search}%");
+            });
+        }
+
+        $testimonials = $testimonials->latest()->paginate(15)->withQueryString();
         return view('admin.testimonials.index', compact('testimonials'));
     }
 

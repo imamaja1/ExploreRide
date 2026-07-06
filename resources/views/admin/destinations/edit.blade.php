@@ -8,7 +8,6 @@
 <form method="POST" action="{{ route('admin.destinations.update', $destination) }}" enctype="multipart/form-data">@csrf @method('PUT')
 <div class="row g-3">
     <div class="col-md-6"><label class="form-label">{{ __('Nama') }} <span class="text-danger">*</span></label><input type="text" name="name" class="form-control" value="{{ old('name', $destination->name) }}" required></div>
-    <div class="col-md-6"><label class="form-label">{{ __('Slug') }} <span class="text-danger">*</span></label><input type="text" name="slug" class="form-control" value="{{ old('slug', $destination->slug) }}" required></div>
     <div class="col-md-4"><label class="form-label">{{ __('Kategori') }} <span class="text-danger">*</span></label>
         <select name="category" class="form-select" required>
             <option value="pantai" @selected(old('category', $destination->category) == 'pantai')>{{ __('Pantai') }}</option>

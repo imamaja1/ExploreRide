@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\DestinationCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class DestinationCategoryController extends Controller
 {
@@ -22,12 +23,12 @@ class DestinationCategoryController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'slug' => 'required|string|max:255|unique:destination_categories,slug',
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:destination_categories,name',
             'is_active' => 'nullable|boolean',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['slug'] = $this->generateUniqueSlug($request->name);
 
         DestinationCategory::create($data);
 
@@ -43,12 +44,12 @@ class DestinationCategoryController extends Controller
     public function update(Request $request, DestinationCategory $category)
     {
         $data = $request->validate([
-            'slug' => 'required|string|max:255|unique:destination_categories,slug,' . $category->id,
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:destination_categories,name,' . $category->id,
             'is_active' => 'nullable|boolean',
         ]);
 
         $data['is_active'] = $request->boolean('is_active');
+        $data['slug'] = $this->generateUniqueSlug($request->name, $category->id);
 
         $category->update($data);
 
@@ -71,5 +72,24 @@ class DestinationCategoryController extends Controller
         $status = $category->is_active ? __('diaktifkan') : __('dinonaktifkan');
         return redirect()->route('admin.destination-categories.index')
             ->with('success', __('Kategori :name berhasil :status.', ['name' => $category->name, 'status' => $status]));
+    }
+
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $base = $slug;
+        $counter = 1;
+        $query = DestinationCategory::where('slug', $slug);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+        while ($query->exists()) {
+            $slug = $base . '-' . $counter++;
+            $query = DestinationCategory::where('slug', $slug);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+        }
+        return $slug;
     }
 }

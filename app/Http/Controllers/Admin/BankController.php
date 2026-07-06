@@ -8,9 +8,20 @@ use Illuminate\Http\Request;
 
 class BankController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $banks = Bank::orderBy('created_at', 'desc')->paginate(10);
+        $banks = Bank::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $banks->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('account_number', 'like', "%{$search}%")
+                  ->orWhere('account_name', 'like', "%{$search}%");
+            });
+        }
+
+        $banks = $banks->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('admin.banks.index', compact('banks'));
     }
 

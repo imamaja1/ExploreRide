@@ -6,12 +6,20 @@ use App\Http\Controllers\Controller;
 use App\Models\TourPackage;
 use App\Models\TourDestination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TourPackageController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $packages = TourPackage::withCount('destinations')->orderBy('created_at', 'desc')->paginate(10);
+        $packages = TourPackage::withCount('destinations');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $packages->where('name', 'like', "%{$search}%");
+        }
+
+        $packages = $packages->orderBy('created_at', 'desc')->paginate(10)->withQueryString();
         return view('admin.tour-packages.index', compact('packages'));
     }
 
@@ -23,8 +31,7 @@ class TourPackageController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:tour_packages,slug',
+            'name' => 'required|string|max:255|unique:tour_packages,name',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
@@ -39,6 +46,7 @@ class TourPackageController extends Controller
         }
 
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['slug'] = $this->generateUniqueSlug($request->name);
 
         TourPackage::create($data);
 
@@ -54,8 +62,7 @@ class TourPackageController extends Controller
     public function update(Request $request, TourPackage $tourPackage)
     {
         $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:tour_packages,slug,' . $tourPackage->id,
+            'name' => 'required|string|max:255|unique:tour_packages,name,' . $tourPackage->id,
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
@@ -71,6 +78,7 @@ class TourPackageController extends Controller
         }
 
         $data['is_active'] = $request->boolean('is_active', true);
+        $data['slug'] = $this->generateUniqueSlug($request->name, $tourPackage->id);
 
         $tourPackage->update($data);
 
@@ -81,5 +89,24 @@ class TourPackageController extends Controller
     {
         $tourPackage->delete();
         return redirect()->route('admin.tour-packages.index')->with('success', 'Paket wisata berhasil dihapus');
+    }
+
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $slug = Str::slug($name);
+        $base = $slug;
+        $counter = 1;
+        $query = TourPackage::where('slug', $slug);
+        if ($ignoreId) {
+            $query->where('id', '!=', $ignoreId);
+        }
+        while ($query->exists()) {
+            $slug = $base . '-' . $counter++;
+            $query = TourPackage::where('slug', $slug);
+            if ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            }
+        }
+        return $slug;
     }
 }
