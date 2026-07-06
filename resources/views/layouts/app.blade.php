@@ -21,8 +21,8 @@
         /* Navbar */
         .navbar-brand { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
         .navbar { padding: 12px 0; }
-        .navbar .nav-link { font-weight: 500; color: #374151 !important; padding: 8px 16px; border-radius: 8px; transition: all 0.2s; }
-        .navbar .nav-link:hover { background: rgba(25,135,84,0.08); color: var(--er-primary) !important; }
+        .navbar .collapse .nav-link { font-weight: 500; color: #374151 !important; padding: 8px 16px; border-radius: 8px; }
+        .navbar-nav > li > .nav-link { padding: 6px 8px; }
 
         /* Hero */
         .hero-section {
@@ -172,10 +172,57 @@
         .card-img-fixed { height: 200px; object-fit: cover; }
         .card-img-car { height: 180px; object-fit: cover; }
 
+        /* Floating WhatsApp */
+        .wa-float { position: fixed; bottom: 100px; right: 20px; z-index: 1040; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; background: #25D366; color: #fff; border-radius: 50%; text-decoration: none; transition: all 0.25s; border: none; }
+        .wa-float:hover { transform: scale(1.1); color: #fff; }
+        .wa-float i { font-size: 1.65rem; }
+        @media (min-width: 992px) { .wa-float { bottom: 30px; right: 30px; width: 60px; height: 60px; } .wa-float i { font-size: 1.85rem; } }
+        @media (max-width: 991.98px) { .wa-float { width: 50px; height: 50px; } .wa-float i { font-size: 1.5rem; } }
+
+        /* No shadow on modals */
+        .modal-content { box-shadow: none !important; }
+
+        /* Navbar dropdowns */
+        .nav-dropdown-toggle { font-weight: 500; color: #374151 !important; padding: 8px 16px !important; border-radius: 8px !important; outline: none !important; box-shadow: none !important; transition: none !important; }
+        .nav-dropdown-toggle:focus, .nav-dropdown-toggle:active { outline: none !important; box-shadow: none !important; background: transparent !important; }
+        .nav-dropdown-menu { min-width: 160px; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 6px; background: #fff; margin-top: 4px !important; }
+        .nav-dropdown-menu .dropdown-item { border-radius: 6px; padding: 8px 14px; font-size: 0.875rem; color: #374151; outline: none !important; transition: none !important; }
+        .nav-dropdown-menu .dropdown-item:focus, .nav-dropdown-menu .dropdown-item:active { background: transparent !important; box-shadow: none !important; outline: none !important; color: #374151 !important; }
+        .nav-dropdown-menu .dropdown-item.active,
+        .nav-dropdown-menu .dropdown-item.active:hover,
+        .nav-dropdown-menu .dropdown-item.active:visited,
+        .nav-dropdown-menu .dropdown-item.active:focus,
+        .nav-dropdown-menu .dropdown-item.active:link {
+            background-color: var(--er-primary) !important;
+            background: var(--er-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--er-primary) !important;
+        }
+
+        /* Mobile language dropdown (smaller) */
+        .mobile-lang-toggle { font-size: 0.85rem !important; padding: 4px 8px !important; border-radius: 6px !important; color: #374151 !important; outline: none !important; box-shadow: none !important; }
+        .mobile-lang-toggle:focus, .mobile-lang-toggle:active { outline: none !important; box-shadow: none !important; background: transparent !important; }
+        .navbar-nav .mobile-lang-dropdown { min-width: 140px; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 6px; background: #fff; }
+        .navbar-nav .mobile-lang-dropdown .dropdown-item { border-radius: 6px; padding: 8px 12px; font-size: 0.85rem; color: #374151; outline: none !important; }
+        .navbar-nav .mobile-lang-dropdown .dropdown-item:focus, .navbar-nav .mobile-lang-dropdown .dropdown-item:active { background: transparent !important; box-shadow: none !important; outline: none !important; color: #374151 !important; }
+        .navbar-nav .mobile-lang-dropdown .dropdown-item.active,
+        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:hover,
+        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:visited,
+        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:focus,
+        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:link {
+            background-color: var(--er-primary) !important;
+            background: var(--er-primary) !important;
+            color: #ffffff !important;
+            border-color: var(--er-primary) !important;
+        }
+
+        .dropdown-menu .dropdown-item.active { color: #ffffff !important; }
+
         @media (max-width: 991.98px) {
             main { padding-bottom: 68px; }
             .footer { padding-bottom: 90px; }
             .hero-section { padding: 60px 0 80px; }
+            .navbar-nav .mobile-lang-dropdown { position: absolute; right: 0; left: auto; top: 100%; transform: none; }
         }
     </style>
     @stack('styles')
@@ -190,10 +237,10 @@
 
             <ul class="navbar-nav flex-row d-lg-none align-items-center">
                 <li class="nav-item dropdown" style="position:relative;">
-                    <a class="nav-link dropdown-toggle py-0" href="#" data-bs-toggle="dropdown" style="font-size:0.85rem;">
+                    <a class="nav-link dropdown-toggle mobile-lang-toggle" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-globe"></i> {{ session('locale', 'id') == 'en' ? 'EN' : 'ID' }}
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" data-bs-popper="none">
+                    <ul class="dropdown-menu dropdown-menu-end mobile-lang-dropdown" data-bs-popper="none">
                         <li><a class="dropdown-item {{ session('locale') == 'id' || !session('locale') ? 'active' : '' }}" href="{{ route('lang.switch', 'id') }}">{{ __('Indonesia') }}</a></li>
                         <li><a class="dropdown-item {{ session('locale') == 'en' ? 'active' : '' }}" href="{{ route('lang.switch', 'en') }}">{{ __('Inggris') }}</a></li>
                     </ul>
@@ -204,8 +251,8 @@
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">{{ __('Beranda') }}</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ __('Destinasi') }}</a>
-                        <ul class="dropdown-menu">
+                        <a class="nav-link dropdown-toggle nav-dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ __('Destinasi') }}</a>
+                        <ul class="dropdown-menu nav-dropdown-menu">
                             @foreach($navCategories as $cat)
                             <li><a class="dropdown-item" href="{{ route('destinations.category', $cat->slug) }}">{{ __($cat->name) }}</a></li>
                             @endforeach
@@ -216,10 +263,10 @@
                 </ul>
                 <ul class="navbar-nav d-none d-lg-flex">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle nav-dropdown-toggle" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-globe"></i> {{ session('locale', 'id') == 'en' ? __('Inggris') : __('Indonesia') }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
+                        <ul class="dropdown-menu dropdown-menu-end nav-dropdown-menu">
                             <li><a class="dropdown-item {{ session('locale') == 'id' || !session('locale') ? 'active' : '' }}" href="{{ route('lang.switch', 'id') }}">{{ __('Indonesia') }}</a></li>
                             <li><a class="dropdown-item {{ session('locale') == 'en' ? 'active' : '' }}" href="{{ route('lang.switch', 'en') }}">{{ __('Inggris') }}</a></li>
                         </ul>
@@ -228,10 +275,10 @@
                 <ul class="navbar-nav">
                     @auth('customer')
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <a class="nav-link dropdown-toggle nav-dropdown-toggle" href="#" data-bs-toggle="dropdown">
                                 {{ Auth::guard('customer')->user()->name }}
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
+                            <ul class="dropdown-menu dropdown-menu-end nav-dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ route('booking.my') }}">{{ __('Pesanan Saya') }}</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('Logout') }}</a></li>
@@ -298,6 +345,10 @@
         </div>
     </footer>
 
+    <a href="https://wa.me/6281234567890?text=Halo%20ExploreRide%2C%20saya%20ingin%20bertanya" class="wa-float" target="_blank" rel="noopener" title="Chat WhatsApp">
+        <i class="bi bi-whatsapp"></i>
+    </a>
+
     <ul class="nav bottom-nav d-lg-none">
         <li class="nav-item">
             <a class="nav-link {{ $currentRoute == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
@@ -310,7 +361,7 @@
                 <i class="bi bi-compass{{ str_starts_with($currentRoute, 'destinations') ? '-fill' : '' }}"></i>
                 <span>{{ __('Destinasi') }}</span>
             </a>
-            <ul class="dropdown-menu" data-bs-popper="none">
+            <ul class="dropdown-menu mobile-lang-dropdown" data-bs-popper="none">
                 @foreach($navCategories as $cat)
                 <li><a class="dropdown-item" href="{{ route('destinations.category', $cat->slug) }}">{{ __($cat->name) }}</a></li>
                 @endforeach
