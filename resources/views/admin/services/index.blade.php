@@ -1,0 +1,36 @@
+@extends('layouts.admin')
+@section('title', __('Layanan'))
+@section('content')
+<div class="page-title-border">
+    <h4 class="page-title">{{ __('Pengaturan Layanan') }}</h4>
+</div>
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr><th>{{ __('No') }}</th><th>{{ __('Nama Layanan') }}</th><th>{{ __('Deskripsi') }}</th><th>{{ __('Status') }}</th><th>{{ __('Aksi') }}</th></tr>
+                </thead>
+                <tbody>
+                    @foreach($services as $service)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td class="fw-bold">{{ $service->name }}</td>
+                        <td>{{ $service->description }}</td>
+                        <td>
+                            <span class="badge rounded-pill bg-{{ $service->is_active ? 'success' : 'danger' }}">
+                                {{ $service->is_active ? __('Aktif') : __('Nonaktif') }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{{ route('admin.services.edit', $service) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i> {{ __('Edit') }}</a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<p class="text-muted small mt-2"><i class="bi bi-info-circle"></i> {{ __('Nonaktifkan layanan untuk menyembunyikannya dari halaman utama pelanggan.') }}</p>
+@endsection
