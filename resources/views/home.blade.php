@@ -37,7 +37,8 @@
                     @endif
                     <div class="card-body d-flex flex-column">
                         <h6 class="card-title">{{ $p->name }}</h6>
-                        <p class="card-text mb-2"><i class="bi bi-clock me-1"></i> {{ $p->duration_days }} {{ __('hari') }}</p>
+                        <p class="card-text mb-1"><i class="bi bi-clock me-1"></i> {{ $p->duration_days }} {{ __('hari') }}</p>
+                        <p class="card-text mb-2 fw-bold" style="color: var(--green-600);">Rp {{ number_format($p->price, 0, ',', '.') }}</p>
                         <p class="card-text mb-3">{{ Str::limit($p->description, 60) }}</p>
                         <div class="mt-auto">
                             <a href="{{ route('package.detail', $p->slug) }}" class="btn btn-green w-100">{{ __('Lihat Detail') }}</a>

@@ -144,7 +144,7 @@
 
         /* ===== HERO ===== */
         .hero-section {
-            background: linear-gradient(135deg, var(--green-700) 0%, var(--green-600) 50%, var(--green-500) 100%);
+            background: var(--green-700);
             color: #fff;
             padding: 80px 0 100px;
             position: relative;
@@ -304,7 +304,7 @@
 
         /* ===== CTA SECTION ===== */
         .cta-section {
-            background: linear-gradient(135deg, var(--green-700) 0%, var(--green-600) 100%);
+            background: var(--green-700);
             color: #fff;
             padding: 60px 0;
             text-align: center;
@@ -546,7 +546,7 @@
         /* ===== FLOATING WHATSAPP ===== */
         .wa-float {
             position: fixed;
-            bottom: 100px;
+            bottom: 80px;
             right: 20px;
             z-index: 1040;
             display: flex;
