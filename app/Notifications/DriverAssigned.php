@@ -21,14 +21,20 @@ class DriverAssigned extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
+        $customerName = $this->booking->customer?->name ?? '-';
+        $carInfo = $this->booking->car
+            ? $this->booking->car->brand . ' ' . $this->booking->car->name
+            : '-';
+        $plateNumber = $this->booking->car?->plate_number ?? '-';
+
         return (new MailMessage)
             ->subject(__('Anda Ditugaskan') . ' - ExploreRide')
             ->greeting(__('Halo') . ' ' . $notifiable->name . '!')
             ->line(__('Anda ditugaskan sebagai driver untuk pesanan:'))
             ->line(__('Kode Booking') . ': **' . $this->booking->booking_code . '**')
-            ->line(__('Pelanggan') . ': ' . $this->booking->customer->name)
-            ->line(__('Mobil') . ': ' . $this->booking->car->brand . ' ' . $this->booking->car->name)
-            ->line(__('Plat Nomor') . ': ' . $this->booking->car->plate_number)
+            ->line(__('Pelanggan') . ': ' . $customerName)
+            ->line(__('Mobil') . ': ' . $carInfo)
+            ->line(__('Plat Nomor') . ': ' . $plateNumber)
             ->line(__('Tanggal') . ': ' . $this->booking->start_date . ' - ' . $this->booking->end_date)
             ->line(__('Lokasi Jemput') . ': ' . ($this->booking->pickup_location ?? '-'))
             ->line(__('Jam Jemput') . ': ' . ($this->booking->pickup_time ?? '-'))
@@ -38,13 +44,19 @@ class DriverAssigned extends Notification implements ShouldQueue
 
     public function toWhatsApp(object $notifiable): string
     {
+        $customerName = $this->booking->customer?->name ?? '-';
+        $carInfo = $this->booking->car
+            ? $this->booking->car->brand . ' ' . $this->booking->car->name
+            : '-';
+        $plateNumber = $this->booking->car?->plate_number ?? '-';
+
         return "*ExploreRide - " . __('Penugasan Driver') . "*\n\n"
             . __('Halo') . " {$notifiable->name}!\n\n"
             . __('Anda ditugaskan untuk pesanan berikut:') . "\n"
             . __('Kode Booking') . ": {$this->booking->booking_code}\n"
-            . __('Pelanggan') . ": {$this->booking->customer->name}\n"
-            . __('Mobil') . ": {$this->booking->car->brand} {$this->booking->car->name}\n"
-            . __('Plat Nomor') . ": {$this->booking->car->plate_number}\n"
+            . __('Pelanggan') . ": {$customerName}\n"
+            . __('Mobil') . ": {$carInfo}\n"
+            . __('Plat Nomor') . ": {$plateNumber}\n"
             . __('Tanggal') . ": {$this->booking->start_date} - {$this->booking->end_date}\n"
             . __('Lokasi Jemput') . ": " . ($this->booking->pickup_location ?? '-') . "\n"
             . __('Jam Jemput') . ": " . ($this->booking->pickup_time ?? '-') . "\n\n"

@@ -68,8 +68,12 @@ document.getElementById('registerForm')?.addEventListener('submit', function(e) 
             location.reload();
         } else {
             if (data.errors) {
-                var msgs = Object.values(data.errors).flat().join('<br>');
-                errorDiv.innerHTML = msgs;
+                errorDiv.textContent = '';
+                Object.values(data.errors).flat().forEach(function(msg) {
+                    var p = document.createElement('div');
+                    p.textContent = msg;
+                    errorDiv.appendChild(p);
+                });
             } else {
                 errorDiv.textContent = data.message || '{{ __("Email atau password salah") }}';
             }
@@ -77,7 +81,7 @@ document.getElementById('registerForm')?.addEventListener('submit', function(e) 
             btn.disabled = false; btn.innerHTML = '{{ __("Daftar") }}';
         }
     }).catch(function() {
-        errorDiv.innerHTML = '{{ __("Email atau password salah") }}';
+        errorDiv.textContent = '{{ __("Email atau password salah") }}';
         errorDiv.classList.remove('d-none');
         btn.disabled = false; btn.innerHTML = '{{ __("Daftar") }}';
     });

@@ -68,10 +68,15 @@
                 btn.disabled = false; btn.innerHTML = '{{ __("Kirim Testimoni") }}';
                 setTimeout(function() { location.reload(); }, 2000);
             } else {
+                errorDiv.textContent = '';
                 var msgs = [];
                 if (data.errors) { for (var k in data.errors) { msgs = msgs.concat(data.errors[k]); } }
                 else { msgs.push(data.message || '{{ __("Terjadi kesalahan") }}'); }
-                errorDiv.innerHTML = msgs.join('<br>');
+                msgs.forEach(function(msg) {
+                    var p = document.createElement('div');
+                    p.textContent = msg;
+                    errorDiv.appendChild(p);
+                });
                 errorDiv.classList.remove('d-none');
                 btn.disabled = false; btn.innerHTML = '{{ __("Kirim Testimoni") }}';
             }

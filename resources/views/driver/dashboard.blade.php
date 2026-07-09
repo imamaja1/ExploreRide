@@ -22,8 +22,8 @@
                     @forelse($bookings as $booking)
                     <tr>
                         <td class="fw-bold">{{ $booking->booking_code }}</td>
-                        <td>{{ $booking->customer->name }}</td>
-                        <td>{{ $booking->car->brand }} {{ $booking->car->name }}</td>
+                        <td>{{ $booking->customer?->name }}</td>
+                        <td>{{ $booking->car?->brand }} {{ $booking->car?->name }}</td>
                         <td>{{ $booking->start_date }} ({{ $booking->duration_days }} {{ __('hari') }})</td>
                         <td>
                             @php $b = match($booking->status) { 'confirmed' => 'success', 'in_progress' => 'primary', 'completed' => 'secondary', default => 'warning' }; @endphp

@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('title', __('Edit Mobil'))
 @section('content')
-<div class="page-title-border mb-4">
-    <h4 class="page-title">{{ __('Edit Mobil') }}</h4>
+<div class="page-header mb-4">
+    <h4 >{{ __('Edit Mobil') }}</h4>
 </div>
 <div class="card">
     <div class="card-body">
@@ -71,8 +71,8 @@
                 </div>
             </div>
             <hr>
-            <button type="submit" class="btn btn-success">{{ __('Update') }}</button>
-            <a href="{{ route('admin.cars.index') }}" class="btn btn-secondary">{{ __('Batal') }}</a>
+            <button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
+            <a href="{{ route('admin.cars.index') }}" class="btn btn-outline-gray">{{ __('Batal') }}</a>
         </form>
     </div>
 </div>

@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('title', __('Tambah Driver'))
 @section('content')
-<div class="page-title-border mb-4">
-    <h4 class="page-title">{{ __('Tambah Driver') }}</h4>
+<div class="page-header mb-4">
+    <h4 >{{ __('Tambah Driver') }}</h4>
 </div>
 <div class="card"><div class="card-body">
 <form method="POST" action="{{ route('admin.drivers.store') }}" enctype="multipart/form-data">@csrf
@@ -23,8 +23,8 @@
     </div>
 </div>
 <hr>
-<button type="submit" class="btn btn-success">{{ __('Simpan') }}</button>
-<a href="{{ route('admin.drivers.index') }}" class="btn btn-secondary">{{ __('Batal') }}</a>
+<button type="submit" class="btn btn-primary">{{ __('Simpan') }}</button>
+<a href="{{ route('admin.drivers.index') }}" class="btn btn-outline-gray">{{ __('Batal') }}</a>
 </form>
 </div></div>
 @endsection

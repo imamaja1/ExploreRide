@@ -1,29 +1,29 @@
 @extends('layouts.admin')
 @section('title', __('Destinasi'))
 @section('content')
-<div class="page-title-border">
-    <h4 class="page-title">{{ __('Destinasi') }}</h4>
+<div class="page-header">
+    <h4>{{ __('Destinasi') }}</h4>
 </div>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="d-flex gap-2">
-        <a href="{{ route('admin.destinations.create') }}" class="btn btn-success btn-sm"><i class="bi bi-plus-lg"></i> {{ __('Tambah Destinasi') }}</a>
+        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createModal"><i class="bi bi-plus-lg"></i> {{ __('Tambah Destinasi') }}</button>
         @if(request('search'))
-            <a href="{{ route('admin.destinations.index') }}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i></a>
+            <a href="{{ route('admin.destinations.index') }}" class="btn btn-outline-gray btn-sm"><i class="bi bi-x-lg"></i></a>
         @endif
     </div>
     <form method="GET" class="d-flex gap-2">
         <div class="input-group">
-            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-            <input type="text" name="search" class="form-control border-start-0 ps-0" style="min-width:200px;" placeholder="{{ __('Cari nama, lokasi...') }}" value="{{ request('search') }}">
+            <span class="input-group-text"><i class="bi bi-search text-muted"></i></span>
+            <input type="text" name="search" class="form-control" style="min-width:200px;" placeholder="{{ __('Cari nama, lokasi...') }}" value="{{ request('search') }}">
         </div>
-        <button class="btn btn-success-er btn-sm"><i class="bi bi-funnel"></i></button>
+        <button class="btn btn-primary btn-sm"><i class="bi bi-funnel"></i></button>
     </form>
 </div>
 
 <div class="card"><div class="card-body p-0">
 <div class="table-responsive">
-<table class="table table-hover mb-0">
-    <thead class="table-light">
+<table class="table">
+    <thead>
         <tr><th>{{ __('Foto') }}</th><th>{{ __('Nama') }}</th><th>{{ __('Kategori') }}</th><th>{{ __('Lokasi') }}</th><th>{{ __('Rating') }}</th><th>{{ __('Status') }}</th><th>{{ __('Aksi') }}</th></tr>
     </thead>
     <tbody>
@@ -33,11 +33,11 @@
             <td class="fw-bold">{{ $d->name }}</td>
             <td>{{ __($d->category) }}</td>
             <td>{{ $d->location }}</td>
-            <td><i class="bi bi-star-fill text-warning"></i> {{ number_format($d->rating, 1) }}</td>
-            <td><span class="badge rounded-pill bg-{{ $d->is_active ? 'success' : 'danger' }}">{{ $d->is_active ? __('Aktif') : __('Nonaktif') }}</span></td>
+            <td><i class="bi bi-star-fill" style="color:#f59e0b;font-size:0.8rem;"></i> {{ number_format($d->rating, 1) }}</td>
+            <td><span class="badge" style="{{ $d->is_active ? 'background:#d1fae5;color:#065f46;' : 'background:#fee2e2;color:#991b1b;' }}">{{ $d->is_active ? __('Aktif') : __('Nonaktif') }}</span></td>
             <td>
-                <a href="{{ route('admin.destinations.edit', $d) }}" class="btn btn-sm btn-warning"><i class="bi bi-pencil"></i></a>
-                <form method="POST" action="{{ route('admin.destinations.destroy', $d) }}" class="d-inline" data-confirm="{{ __('Hapus destinasi?') }}">@csrf @method('DELETE')<button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button></form>
+                <button class="btn btn-sm btn-outline-gray" onclick="openEdit('{{ route('admin.destinations.update', $d) }}', '{{ $d->name }}', '{{ $d->category }}', '{{ $d->location }}', '{{ $d->rating }}', {{ $d->is_active ? 'true' : 'false' }}, '{{ addslashes($d->description ?? '') }}')"><i class="bi bi-pencil"></i></button>
+                <form method="POST" action="{{ route('admin.destinations.destroy', $d) }}" class="d-inline" data-confirm="{{ __('Hapus destinasi?') }}">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
             </td>
         </tr>
         @empty
@@ -46,5 +46,82 @@
     </tbody>
 </table>
 </div></div></div>
-<div class="mt-3 d-flex justify-content-center">{{ $destinations->links() }}</div>
+<div class="mt-3">{{ $destinations->links() }}</div>
+
+{{-- CREATE MODAL --}}
+<div class="modal fade" id="createModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 14px; border: 1px solid var(--gray-200);">
+            <form method="POST" action="{{ route('admin.destinations.store') }}" enctype="multipart/form-data">@csrf
+                <div class="modal-header" style="border-bottom: 1px solid var(--gray-200);">
+                    <h5 class="modal-title fw-bold">{{ __('Tambah Destinasi') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ __('Nama') }} <span class="text-danger">*</span></label><input type="text" name="name" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label">{{ __('Kategori') }} <span class="text-danger">*</span></label>
+                            <select name="category" class="form-select" required><option value="">{{ __('-- Pilih --') }}</option>@foreach($categories as $cat)<option value="{{ $cat->slug }}">{{ $cat->name }}</option>@endforeach</select>
+                        </div>
+                        <div class="col-md-3"><label class="form-label">{{ __('Rating') }}</label><input type="number" name="rating" class="form-control" value="4" min="0" max="5" step="0.1"></div>
+                        <div class="col-md-6"><label class="form-label">{{ __('Lokasi') }} <span class="text-danger">*</span></label><input type="text" name="location" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label">{{ __('Foto') }}</label><input type="file" name="main_photo" class="form-control" accept="image/*"></div>
+                        <div class="col-md-3 d-flex align-items-end"><div class="form-check"><input type="checkbox" name="is_active" class="form-check-input" id="isActiveCreate" value="1" checked><label class="form-check-label" for="isActiveCreate">{{ __('Aktif') }}</label></div></div>
+                        <div class="col-12"><label class="form-label">{{ __('Deskripsi') }}</label><textarea name="description" class="form-control" rows="3"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--gray-200);">
+                    <button type="button" class="btn btn-outline-gray" data-bs-dismiss="modal">{{ __('Batal') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> {{ __('Simpan') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{-- EDIT MODAL (SINGLE) --}}
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 14px; border: 1px solid var(--gray-200);">
+            <form method="POST" id="editForm" action="" enctype="multipart/form-data">@csrf @method('PUT')
+                <div class="modal-header" style="border-bottom: 1px solid var(--gray-200);">
+                    <h5 class="modal-title fw-bold">{{ __('Edit Destinasi') }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <div class="col-md-6"><label class="form-label">{{ __('Nama') }} <span class="text-danger">*</span></label><input type="text" name="name" id="editName" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label">{{ __('Kategori') }} <span class="text-danger">*</span></label>
+                            <select name="category" id="editCategory" class="form-select" required>@foreach($categories as $cat)<option value="{{ $cat->slug }}">{{ $cat->name }}</option>@endforeach</select>
+                        </div>
+                        <div class="col-md-3"><label class="form-label">{{ __('Rating') }}</label><input type="number" name="rating" id="editRating" class="form-control" min="0" max="5" step="0.1"></div>
+                        <div class="col-md-6"><label class="form-label">{{ __('Lokasi') }} <span class="text-danger">*</span></label><input type="text" name="location" id="editLocation" class="form-control" required></div>
+                        <div class="col-md-3"><label class="form-label">{{ __('Foto') }}</label><input type="file" name="main_photo" class="form-control" accept="image/*"><small class="text-muted">{{ __('Kosongkan jika tidak ganti') }}</small></div>
+                        <div class="col-md-3 d-flex align-items-end"><div class="form-check"><input type="checkbox" name="is_active" class="form-check-input" id="editIsActive" value="1"><label class="form-check-label" for="editIsActive">{{ __('Aktif') }}</label></div></div>
+                        <div class="col-12"><label class="form-label">{{ __('Deskripsi') }}</label><textarea name="description" id="editDescription" class="form-control" rows="3"></textarea></div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--gray-200);">
+                    <button type="button" class="btn btn-outline-gray" data-bs-dismiss="modal">{{ __('Batal') }}</button>
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-1"></i> {{ __('Update') }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+function openEdit(url, name, category, location, rating, isActive, description) {
+    document.getElementById('editForm').action = url;
+    document.getElementById('editName').value = name;
+    document.getElementById('editCategory').value = category;
+    document.getElementById('editLocation').value = location;
+    document.getElementById('editRating').value = rating;
+    document.getElementById('editIsActive').checked = isActive;
+    document.getElementById('editDescription').value = description;
+    new bootstrap.Modal(document.getElementById('editModal')).show();
+}
+</script>
+@endpush

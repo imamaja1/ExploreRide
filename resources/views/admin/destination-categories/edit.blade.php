@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('title', __('Edit Kategori Destinasi'))
 @section('content')
-<div class="page-title-border mb-4">
-    <h4 class="page-title">{{ __('Edit Kategori Destinasi') }}</h4>
+<div class="page-header mb-4">
+    <h4 >{{ __('Edit Kategori Destinasi') }}</h4>
 </div>
 <div class="card"><div class="card-body">
 <form method="POST" action="{{ route('admin.destination-categories.update', $category) }}">@csrf @method('PUT')
@@ -12,8 +12,8 @@
     <label class="form-check-label" for="isActive">{{ __('Aktif') }}</label></div></div>
 </div>
 <hr>
-<button type="submit" class="btn btn-success">{{ __('Update') }}</button>
-<a href="{{ route('admin.destination-categories.index') }}" class="btn btn-secondary">{{ __('Batal') }}</a>
+<button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
+<a href="{{ route('admin.destination-categories.index') }}" class="btn btn-outline-gray">{{ __('Batal') }}</a>
 </form>
 </div></div>
 @endsection

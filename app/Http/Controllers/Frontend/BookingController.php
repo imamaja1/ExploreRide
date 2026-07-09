@@ -10,6 +10,7 @@ use App\Models\TourPackage;
 use App\Models\Bank;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class BookingController extends Controller
@@ -38,28 +39,45 @@ class BookingController extends Controller
         $car = Car::findOrFail($data['car_id']);
         $endDate = date('Y-m-d', strtotime($data['start_date'] . ' + ' . ($data['duration_days'] - 1) . ' days'));
 
+        $isOverlapping = Booking::where('car_id', $data['car_id'])
+            ->whereIn('status', ['pending', 'waiting_payment', 'confirmed', 'in_progress'])
+            ->where('start_date', '<=', $endDate)
+            ->where('end_date', '>=', $data['start_date'])
+            ->exists();
+
+        if ($isOverlapping) {
+            return back()->withErrors(['car_id' => __('Mobil ini sudah dipesan pada tanggal tersebut. Silakan pilih tanggal lain.')])->withInput();
+        }
+
         $totalPrice = $car->price_per_day * $data['duration_days'];
 
         if (!empty($data['tour_package_id'])) {
             $package = TourPackage::findOrFail($data['tour_package_id']);
-            $totalPrice = $package->price;
+            $totalPrice = $car->price_per_day * $data['duration_days'] + $package->price;
         }
 
-        $booking = Booking::create([
-            'booking_code' => 'EXP-' . strtoupper(Str::random(8)),
-            'customer_id' => Auth::guard('customer')->id(),
-            'car_id' => $data['car_id'],
-            'service_id' => $data['service_id'],
-            'tour_package_id' => $data['tour_package_id'] ?? null,
-            'start_date' => $data['start_date'],
-            'end_date' => $endDate,
-            'duration_days' => $data['duration_days'],
-            'pickup_location' => $data['pickup_location'] ?? null,
-            'pickup_time' => $data['pickup_time'] ?? null,
-            'total_price' => $totalPrice,
-            'status' => 'pending',
-            'notes' => $data['notes'] ?? null,
-        ]);
+        $bookingCode = 'EXP-' . strtoupper(Str::random(8));
+        while (Booking::where('booking_code', $bookingCode)->exists()) {
+            $bookingCode = 'EXP-' . strtoupper(Str::random(8));
+        }
+
+        $booking = DB::transaction(function () use ($data, $endDate, $totalPrice, $bookingCode) {
+            return Booking::create([
+                'booking_code' => $bookingCode,
+                'customer_id' => Auth::guard('customer')->id(),
+                'car_id' => $data['car_id'],
+                'service_id' => $data['service_id'],
+                'tour_package_id' => $data['tour_package_id'] ?? null,
+                'start_date' => $data['start_date'],
+                'end_date' => $endDate,
+                'duration_days' => $data['duration_days'],
+                'pickup_location' => $data['pickup_location'] ?? null,
+                'pickup_time' => $data['pickup_time'] ?? null,
+                'total_price' => $totalPrice,
+                'status' => 'pending',
+                'notes' => $data['notes'] ?? null,
+            ]);
+        });
 
         return redirect()->route('booking.payment', $booking->id);
     }
@@ -84,6 +102,14 @@ class BookingController extends Controller
             abort(403);
         }
 
+        if ($booking->payment()->exists()) {
+            return back()->withErrors(['proof_photo' => __('Bukti transfer sudah diupload sebelumnya.')]);
+        }
+
+        if (!in_array($booking->status, ['pending', 'waiting_payment'])) {
+            return back()->withErrors(['status' => __('Status pesanan tidak memungkinkan untuk upload pembayaran.')]);
+        }
+
         $data = $request->validate([
             'bank_id' => 'required|exists:banks,id',
             'account_name' => 'required|string',
@@ -91,23 +117,26 @@ class BookingController extends Controller
         ]);
 
         $bank = Bank::findOrFail($data['bank_id']);
+        $path = null;
 
         if ($request->hasFile('proof_photo')) {
             $path = $request->file('proof_photo')->store('payments', 'public');
         }
 
-        $booking->payment()->create([
-            'amount' => $booking->total_price,
-            'method' => 'transfer',
-            'bank_id' => $bank->id,
-            'bank_name' => $bank->name,
-            'account_number' => $bank->account_number,
-            'account_name' => $data['account_name'],
-            'proof_photo' => $path ?? null,
-            'status' => 'pending',
-        ]);
+        DB::transaction(function () use ($booking, $data, $bank, $path) {
+            $booking->payment()->create([
+                'amount' => $booking->total_price,
+                'method' => 'transfer',
+                'bank_id' => $bank->id,
+                'bank_name' => $bank->name,
+                'account_number' => $bank->account_number,
+                'account_name' => $data['account_name'],
+                'proof_photo' => $path,
+                'status' => 'pending',
+            ]);
 
-        $booking->update(['status' => 'waiting_payment']);
+            $booking->update(['status' => 'waiting_payment']);
+        });
 
         return redirect()->route('booking.detail', $booking->id)->with('success', 'Bukti transfer berhasil diupload!');
     }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TourPackage;
 use App\Models\TourDestination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class TourPackageController extends Controller
@@ -50,7 +51,7 @@ class TourPackageController extends Controller
 
         TourPackage::create($data);
 
-        return redirect()->route('admin.tour-packages.index')->with('success', 'Paket wisata berhasil ditambahkan');
+        return redirect()->back()->with('success', __('Paket wisata berhasil ditambahkan'));
     }
 
     public function edit(TourPackage $tourPackage)
@@ -74,6 +75,9 @@ class TourPackageController extends Controller
         ]);
 
         if ($request->hasFile('main_photo')) {
+            if ($tourPackage->main_photo) {
+                Storage::disk('public')->delete($tourPackage->main_photo);
+            }
             $data['main_photo'] = $request->file('main_photo')->store('packages', 'public');
         }
 
@@ -82,11 +86,14 @@ class TourPackageController extends Controller
 
         $tourPackage->update($data);
 
-        return redirect()->route('admin.tour-packages.index')->with('success', 'Paket wisata berhasil diupdate');
+        return redirect()->back()->with('success', __('Paket wisata berhasil diupdate'));
     }
 
     public function destroy(TourPackage $tourPackage)
     {
+        if ($tourPackage->main_photo) {
+            Storage::disk('public')->delete($tourPackage->main_photo);
+        }
         $tourPackage->delete();
         return redirect()->route('admin.tour-packages.index')->with('success', 'Paket wisata berhasil dihapus');
     }

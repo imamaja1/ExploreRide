@@ -2,39 +2,40 @@
 @section('title', __('Pilih Mobil'))
 @section('content')
 <div class="container py-5">
-    <h2 class="fw-bold mb-2">{{ __('Pilih Mobil') }}</h2>
-    <p class="text-muted mb-4">{{ __('Tersedia berbagai pilihan mobil untuk perjalanan Anda') }}</p>
+    <div class="mb-4">
+        <h4 class="fw-bold mb-1" style="color: var(--gray-900);">{{ __('Pilih Mobil') }}</h4>
+        <p class="mb-0" style="color: var(--gray-500);">{{ __('Tersedia berbagai pilihan mobil untuk perjalanan Anda') }}</p>
+    </div>
 
     <div class="row g-4">
         @forelse($cars as $car)
-        <div class="col-md-4 col-lg-3">
-            <div class="card h-100">
+        <div class="col-md-6 col-lg-3">
+            <div class="card h-100 border-0 shadow-sm" style="border-radius: 14px; overflow: hidden;">
                 @if($car->main_photo)
-                    <img src="{{ asset('storage/' . $car->main_photo) }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                    <img src="{{ asset('storage/' . $car->main_photo) }}" style="height: 180px; object-fit: cover;" alt="{{ $car->name }}">
                 @else
-                    <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
-                        <i class="bi bi-car-front text-muted" style="font-size: 4rem;"></i>
+                    <div class="d-flex align-items-center justify-content-center" style="height: 180px; background: var(--gray-100);">
+                        <i class="bi bi-car-front text-muted" style="font-size: 3rem;"></i>
                     </div>
                 @endif
-                <div class="card-body">
-                    <h5 class="card-title">{{ $car->brand }} {{ $car->name }}</h5>
-                    <p class="text-success fw-bold fs-5">{{ __('Rp') }} {{ number_format($car->price_per_day, 0, ',', '.') }}/{{ __('hari') }}</p>
+                <div class="card-body d-flex flex-column p-3">
+                    <h6 class="fw-bold mb-1" style="color: var(--gray-900);">{{ $car->brand }} {{ $car->name }}</h6>
+                    <p class="fw-bold mb-2" style="color: var(--green-600);">{{ __('Rp') }} {{ number_format($car->price_per_day, 0, ',', '.') }}<small style="color: var(--gray-400); font-weight: 400;">/{{ __('hari') }}</small></p>
                     <div class="mb-2">
-                        <span class="badge bg-success">{{ __($car->transmission) }}</span>
-                        <span class="badge bg-secondary">{{ $car->seats }} {{ __('kursi') }}</span>
-                        <span class="badge bg-info">{{ __($car->fuel_type) }}</span>
+                        <span class="badge" style="background: var(--green-100); color: var(--green-700); font-size: 0.7rem;">{{ __($car->transmission) }}</span>
+                        <span class="badge" style="background: var(--gray-100); color: var(--gray-600); font-size: 0.7rem;">{{ $car->seats }} {{ __('kursi') }}</span>
                     </div>
-                    <p class="small text-muted">{{ $car->description ? Str::limit($car->description, 100) : '' }}</p>
-                </div>
-                <div class="card-footer bg-white border-0 pb-3">
-                    <a href="{{ route('car.detail', $car->id) }}" class="btn btn-success w-100">{{ __('Detail & Pesan') }}</a>
+                    <p class="small mb-3" style="color: var(--gray-500);">{{ $car->description ? Str::limit($car->description, 80) : '' }}</p>
+                    <div class="mt-auto">
+                        <a href="{{ route('car.detail', $car->id) }}" class="btn btn-green w-100 btn-sm">{{ __('Detail & Pesan') }}</a>
+                    </div>
                 </div>
             </div>
         </div>
         @empty
         <div class="col-12 text-center py-5">
             <i class="bi bi-car-front text-muted" style="font-size: 4rem;"></i>
-            <h4 class="mt-3">{{ __('Belum ada mobil tersedia') }}</h4>
+            <h5 class="mt-3" style="color: var(--gray-500);">{{ __('Belum ada mobil tersedia') }}</h5>
         </div>
         @endforelse
     </div>

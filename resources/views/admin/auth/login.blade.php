@@ -30,7 +30,7 @@
                                 <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
                                 @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-                            <button type="submit" class="btn btn-success w-100">{{ __('Masuk') }}</button>
+                            <button type="submit" class="btn btn-primary w-100">{{ __('Masuk') }}</button>
                         </form>
                     </div>
                 </div>

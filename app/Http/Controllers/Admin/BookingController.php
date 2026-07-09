@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Notifications\BookingConfirmed;
 use App\Notifications\DriverAssigned;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class BookingController extends Controller
 {
@@ -45,19 +46,29 @@ class BookingController extends Controller
 
     public function confirmPayment(Request $request, $id)
     {
-        $booking = Booking::with('car')->findOrFail($id);
+        $booking = Booking::with(['car', 'customer'])->findOrFail($id);
 
-        if ($booking->payment) {
+        if ($booking->status !== 'waiting_payment') {
+            return back()->withErrors(['status' => __('Hanya pesanan dengan status menunggu pembayaran yang bisa dikonfirmasi.')]);
+        }
+
+        if (!$booking->payment) {
+            return back()->withErrors(['payment' => __('Bukti pembayaran belum diupload.')]);
+        }
+
+        DB::transaction(function () use ($booking) {
             $booking->payment->update([
                 'status' => 'verified',
                 'verified_by' => auth()->id(),
                 'verified_at' => now(),
             ]);
-        }
 
-        $booking->update(['status' => 'confirmed']);
+            $booking->update(['status' => 'confirmed']);
 
-        $booking->customer->notify(new BookingConfirmed($booking));
+            if ($booking->customer) {
+                $booking->customer->notify(new BookingConfirmed($booking));
+            }
+        });
 
         return redirect()->back()->with('success', 'Pembayaran dikonfirmasi! Notifikasi terkirim ke pelanggan.');
     }
@@ -69,13 +80,22 @@ class BookingController extends Controller
         ]);
 
         $booking = Booking::with(['car', 'customer'])->findOrFail($id);
-        $booking->update([
-            'driver_id' => $data['driver_id'],
-            'status' => 'confirmed',
-        ]);
 
-        $driver = User::find($data['driver_id']);
-        $driver->notify(new DriverAssigned($booking));
+        if (!in_array($booking->status, ['confirmed', 'pending'])) {
+            return back()->withErrors(['status' => __('Hanya pesanan yang sudah dikonfirmasi atau pending yang bisa ditugaskan driver.')]);
+        }
+
+        DB::transaction(function () use ($booking, $data) {
+            $booking->update([
+                'driver_id' => $data['driver_id'],
+                'status' => 'confirmed',
+            ]);
+
+            $driver = User::find($data['driver_id']);
+            if ($driver) {
+                $driver->notify(new DriverAssigned($booking));
+            }
+        });
 
         return redirect()->back()->with('success', 'Sopir berhasil ditugaskan! Notifikasi terkirim ke driver.');
     }
@@ -83,6 +103,11 @@ class BookingController extends Controller
     public function cancel(Request $request, $id)
     {
         $booking = Booking::findOrFail($id);
+
+        if (in_array($booking->status, ['completed', 'cancelled'])) {
+            return back()->withErrors(['status' => __('Pesanan yang sudah selesai atau dibatalkan tidak bisa diubah.')]);
+        }
+
         $booking->update(['status' => 'cancelled']);
 
         return redirect()->back()->with('success', 'Pesanan dibatalkan');

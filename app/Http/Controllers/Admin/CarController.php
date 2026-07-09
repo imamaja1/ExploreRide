@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Car;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CarController extends Controller
 {
@@ -58,7 +59,7 @@ class CarController extends Controller
 
         Car::create($data);
 
-        return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil ditambahkan');
+        return redirect()->back()->with('success', __('Mobil berhasil ditambahkan'));
     }
 
     public function edit(Car $car)
@@ -86,6 +87,9 @@ class CarController extends Controller
         ]);
 
         if ($request->hasFile('main_photo')) {
+            if ($car->main_photo) {
+                Storage::disk('public')->delete($car->main_photo);
+            }
             $data['main_photo'] = $request->file('main_photo')->store('cars', 'public');
         }
 
@@ -94,11 +98,14 @@ class CarController extends Controller
 
         $car->update($data);
 
-        return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil diupdate');
+        return redirect()->back()->with('success', __('Mobil berhasil diupdate'));
     }
 
     public function destroy(Car $car)
     {
+        if ($car->main_photo) {
+            Storage::disk('public')->delete($car->main_photo);
+        }
         $car->delete();
         return redirect()->route('admin.cars.index')->with('success', 'Mobil berhasil dihapus');
     }

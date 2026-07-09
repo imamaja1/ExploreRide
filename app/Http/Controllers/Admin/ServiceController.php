@@ -8,9 +8,20 @@ use Illuminate\Http\Request;
 
 class ServiceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $services = Service::orderBy('created_at')->get();
+        $services = Service::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $services->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        $services = $services->orderBy('created_at')->paginate(10)->withQueryString();
+
         return view('admin.services.index', compact('services'));
     }
 
@@ -31,6 +42,6 @@ class ServiceController extends Controller
 
         $service->update($data);
 
-        return redirect()->route('admin.services.index')->with('success', 'Layanan berhasil diupdate');
+        return redirect()->back()->with('success', __('Layanan berhasil diupdate'));
     }
 }

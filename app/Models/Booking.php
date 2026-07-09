@@ -17,7 +17,7 @@ class Booking extends Model
         return [
             'start_date' => 'date',
             'end_date' => 'date',
-            'pickup_time' => 'datetime',
+            'pickup_time' => 'datetime:H:i',
             'total_price' => 'decimal:2',
         ];
     }

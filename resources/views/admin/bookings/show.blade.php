@@ -1,9 +1,9 @@
 @extends('layouts.admin')
 @section('title', __('Detail Pesanan') . ' - ' . $booking->booking_code)
 @section('content')
-<div class="page-title-border">
-    <h4 class="page-title">{{ __('Detail Pesanan') }}: {{ $booking->booking_code }}</h4>
-    <a href="{{ route('admin.bookings.index') }}" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> {{ __('Kembali') }}</a>
+<div class="page-header">
+    <h4 >{{ __('Detail Pesanan') }}: {{ $booking->booking_code }}</h4>
+    <a href="{{ route('admin.bookings.index') }}" class="btn btn-outline-gray"><i class="bi bi-arrow-left"></i> {{ __('Kembali') }}</a>
 </div>
 
 @php
@@ -138,7 +138,7 @@
                 <hr>
                 <form method="POST" action="{{ route('admin.bookings.confirm-payment', $booking) }}" data-confirm="{{ __('Konfirmasi pembayaran ini?') }}" data-confirm-button="{{ __('Ya, konfirmasi!') }}" data-confirm-color="#198754">
                     @csrf
-                    <button class="btn btn-success w-100"><i class="bi bi-check-circle"></i> {{ __('Konfirmasi Pembayaran') }}</button>
+                    <button class="btn btn-primary w-100"><i class="bi bi-check-circle"></i> {{ __('Konfirmasi Pembayaran') }}</button>
                 </form>
                 @endif
             </div>

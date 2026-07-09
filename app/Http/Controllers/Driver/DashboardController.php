@@ -42,6 +42,18 @@ class DashboardController extends Controller
         ]);
 
         $booking = Booking::where('driver_id', auth()->id())->findOrFail($id);
+
+        $validTransitions = [
+            'confirmed' => ['in_progress'],
+            'in_progress' => ['completed'],
+        ];
+
+        $allowed = $validTransitions[$booking->status] ?? [];
+
+        if (!in_array($data['status'], $allowed)) {
+            return back()->withErrors(['status' => __('Transisi status tidak valid.')]);
+        }
+
         $booking->update(['status' => $data['status']]);
 
         return redirect()->back()->with('success', 'Status berhasil diupdate');

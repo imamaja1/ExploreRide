@@ -35,11 +35,11 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">{{ __('Layanan') }}</div>
-                        <div class="col-sm-8">{{ $booking->service->name }}</div>
+                        <div class="col-sm-8">{{ $booking->service?->name }}</div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">{{ __('Mobil') }}</div>
-                        <div class="col-sm-8">{{ $booking->car->brand }} {{ $booking->car->name }} ({{ $booking->car->plate_number }})</div>
+                        <div class="col-sm-8">{{ $booking->car?->brand }} {{ $booking->car?->name }} ({{ $booking->car?->plate_number }})</div>
                     </div>
                     @if($booking->tourPackage)
                     <div class="row mb-3">
@@ -100,16 +100,42 @@
         const evtSource = new EventSource("{{ route('sse.booking', $booking->id) }}");
         evtSource.addEventListener('update', function(e) {
             const data = JSON.parse(e.data);
-            const statusBadge = document.querySelector('.badge.bg-\\' + window.getComputedStyle(document.querySelector('.badge')).backgroundColor + '');
             if (data.driver) {
-                document.getElementById('driverInfo').innerHTML = `
-                    <div class="alert alert-success">
-                        <h5><i class="bi bi-person-badge"></i> {{ __("Sopir Ditugaskan") }}</h5>
-                        <p class="mb-1"><strong>{{ __("Nama:") }}</strong> ${data.driver.name}</p>
-                        <p class="mb-1"><strong>{{ __("No. HP:") }}</strong> ${data.driver.phone}</p>
-                        <p class="mb-0"><strong>{{ __("Plat Nomor:") }}</strong> ${data.driver.plate_number}</p>
-                    </div>
-                `;
+                const container = document.getElementById('driverInfo');
+                container.innerHTML = '';
+
+                const alert = document.createElement('div');
+                alert.className = 'alert alert-success';
+
+                const title = document.createElement('h5');
+                title.innerHTML = '<i class="bi bi-person-badge"></i> {{ __("Sopir Ditugaskan") }}';
+                alert.appendChild(title);
+
+                const nameLabel = document.createElement('p');
+                nameLabel.className = 'mb-1';
+                const nameStrong = document.createElement('strong');
+                nameStrong.textContent = '{{ __("Nama:") }} ';
+                nameLabel.appendChild(nameStrong);
+                nameLabel.appendChild(document.createTextNode(data.driver.name));
+                alert.appendChild(nameLabel);
+
+                const phoneLabel = document.createElement('p');
+                phoneLabel.className = 'mb-1';
+                const phoneStrong = document.createElement('strong');
+                phoneStrong.textContent = '{{ __("No. HP:") }} ';
+                phoneLabel.appendChild(phoneStrong);
+                phoneLabel.appendChild(document.createTextNode(data.driver.phone));
+                alert.appendChild(phoneLabel);
+
+                const plateLabel = document.createElement('p');
+                plateLabel.className = 'mb-0';
+                const plateStrong = document.createElement('strong');
+                plateStrong.textContent = '{{ __("Plat Nomor:") }} ';
+                plateLabel.appendChild(plateStrong);
+                plateLabel.appendChild(document.createTextNode(data.driver.plate_number));
+                alert.appendChild(plateLabel);
+
+                container.appendChild(alert);
             }
         });
         evtSource.addEventListener('error', function() {

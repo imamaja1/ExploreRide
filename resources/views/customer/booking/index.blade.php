@@ -21,7 +21,7 @@
                 @foreach($bookings as $booking)
                 <tr>
                     <td class="fw-bold">{{ $booking->booking_code }}</td>
-                    <td>{{ $booking->car->brand }} {{ $booking->car->name }}</td>
+                    <td>{{ $booking->car?->brand }} {{ $booking->car?->name }}</td>
                     <td>{{ $booking->start_date }} ({{ $booking->duration_days }} {{ __('hari') }})</td>
                     <td>{{ __('Rp') }} {{ number_format($booking->total_price, 0, ',', '.') }}</td>
                     <td>

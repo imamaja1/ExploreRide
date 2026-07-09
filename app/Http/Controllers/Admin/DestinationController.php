@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Destination;
+use App\Models\DestinationCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -22,24 +23,28 @@ class DestinationController extends Controller
             });
         }
 
-        $destinations = $destinations->latest()->paginate(15)->withQueryString();
-        return view('admin.destinations.index', compact('destinations'));
+        $destinations = $destinations->latest()->paginate(10)->withQueryString();
+        $categories = DestinationCategory::where('is_active', true)->get();
+        return view('admin.destinations.index', compact('destinations', 'categories'));
     }
 
     public function create()
     {
-        return view('admin.destinations.create');
+        $categories = DestinationCategory::where('is_active', true)->get();
+        return view('admin.destinations.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
+        $categorySlugs = DestinationCategory::where('is_active', true)->pluck('slug')->toArray();
+
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:destinations,name',
-            'category' => 'required|in:pantai,gunung,air-terjun',
+            'category' => 'required|in:' . implode(',', $categorySlugs),
             'location' => 'required|string|max:255',
             'rating' => 'required|numeric|min:0|max:5',
             'description' => 'nullable|string',
-            'main_photo' => 'nullable|image|max:2048',
+            'main_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -52,24 +57,26 @@ class DestinationController extends Controller
 
         Destination::create($data);
 
-        return redirect()->route('admin.destinations.index')
-            ->with('success', __('Destinasi berhasil ditambahkan!'));
+        return redirect()->back()->with('success', __('Destinasi berhasil ditambahkan'));
     }
 
     public function edit(Destination $destination)
     {
-        return view('admin.destinations.edit', compact('destination'));
+        $categories = DestinationCategory::where('is_active', true)->get();
+        return view('admin.destinations.edit', compact('destination', 'categories'));
     }
 
     public function update(Request $request, Destination $destination)
     {
+        $categorySlugs = DestinationCategory::where('is_active', true)->pluck('slug')->toArray();
+
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:destinations,name,' . $destination->id,
-            'category' => 'required|in:pantai,gunung,air-terjun',
+            'category' => 'required|in:' . implode(',', $categorySlugs),
             'location' => 'required|string|max:255',
             'rating' => 'required|numeric|min:0|max:5',
             'description' => 'nullable|string',
-            'main_photo' => 'nullable|image|max:2048',
+            'main_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -85,8 +92,7 @@ class DestinationController extends Controller
 
         $destination->update($data);
 
-        return redirect()->route('admin.destinations.index')
-            ->with('success', __('Destinasi berhasil diupdate!'));
+        return redirect()->back()->with('success', __('Destinasi berhasil diupdate'));
     }
 
     private function generateUniqueSlug(string $name, ?int $ignoreId = null): string

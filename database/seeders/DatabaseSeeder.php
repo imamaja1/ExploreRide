@@ -57,5 +57,6 @@ class DatabaseSeeder extends Seeder
         $this->call(TestimonialSeeder::class);
         $this->call(TourPackageSeeder::class);
         $this->call(CarSeeder::class);
+        $this->call(SettingSeeder::class);
     }
 }

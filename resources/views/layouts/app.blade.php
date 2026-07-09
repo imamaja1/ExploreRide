@@ -7,240 +7,669 @@
     <title>ExploreRide - @yield('title', __('Sewa Mobil & Paket Wisata'))</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <style>
         :root {
-            --er-primary: #198754;
-            --er-dark: #145c32;
-            --er-light: #f0f2f5;
+            --green-50: #f0fdf4;
+            --green-100: #dcfce7;
+            --green-200: #bbf7d0;
+            --green-500: #22c55e;
+            --green-600: #16a34a;
+            --green-700: #15803d;
+            --green-800: #166534;
+            --green-900: #14532d;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
         }
-        body { font-family: 'Inter', sans-serif; color: #374151; line-height: 1.6; }
-        h1, h2, h3, h4 { line-height: 1.3; }
 
-        /* Navbar */
-        .navbar-brand { font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px; }
-        .navbar { padding: 12px 0; }
-        .navbar .collapse .nav-link { font-weight: 500; color: #374151 !important; padding: 8px 16px; border-radius: 8px; }
-        .navbar-nav > li > .nav-link { padding: 6px 8px; }
+        * { box-sizing: border-box; }
 
-        /* Hero */
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--gray-700);
+            line-height: 1.6;
+            background: #fff;
+        }
+
+        h1, h2, h3, h4 { line-height: 1.2; color: var(--gray-900); }
+
+        /* ===== NAVBAR ===== */
+        .navbar {
+            padding: 14px 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--gray-100);
+            transition: box-shadow 0.3s;
+        }
+
+        .navbar.scrolled {
+            box-shadow: 0 1px 8px rgba(0,0,0,0.06);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--green-700) !important;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar-brand i {
+            font-size: 1.4rem;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--gray-600) !important;
+            padding: 8px 14px !important;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: all 0.15s;
+        }
+
+        .nav-link:hover {
+            color: var(--green-700) !important;
+            background: var(--green-50);
+        }
+
+        .nav-link.active {
+            color: var(--green-700) !important;
+            font-weight: 600;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-green {
+            background: var(--green-600);
+            border-color: var(--green-600);
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .btn-green:hover {
+            background: var(--green-700);
+            border-color: var(--green-700);
+            color: #fff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(22,163,74,0.25);
+        }
+
+        .btn-green-outline {
+            border: 2px solid var(--green-600);
+            color: var(--green-700);
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-green-outline:hover {
+            background: var(--green-600);
+            color: #fff;
+            transform: translateY(-1px);
+        }
+
+        .btn-green-ghost {
+            border: 2px solid rgba(255,255,255,0.4);
+            color: #fff;
+            border-radius: 10px;
+            padding: 10px 24px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            background: transparent;
+            transition: all 0.2s;
+        }
+
+        .btn-green-ghost:hover {
+            background: #fff;
+            color: var(--green-700);
+            border-color: #fff;
+            transform: translateY(-1px);
+        }
+
+        /* ===== HERO ===== */
         .hero-section {
-            background: var(--er-primary);
-            color: white;
-            padding: 100px 0 120px;
+            background: linear-gradient(135deg, var(--green-700) 0%, var(--green-600) 50%, var(--green-500) 100%);
+            color: #fff;
+            padding: 80px 0 100px;
             position: relative;
             overflow: hidden;
         }
+
         .hero-section::before {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 600px;
-            height: 600px;
+            top: -40%;
+            right: -15%;
+            width: 500px;
+            height: 500px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.05);
         }
+
         .hero-section::after {
             content: '';
             position: absolute;
             bottom: -30%;
             left: -10%;
-            width: 400px;
-            height: 400px;
+            width: 350px;
+            height: 350px;
             border-radius: 50%;
             background: rgba(255,255,255,0.04);
         }
+
         .hero-section h1 {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             font-weight: 800;
-            font-size: clamp(1.75rem, 4vw, 2.75rem);
-            letter-spacing: -1px;
-        }
-        .hero-section .lead { font-size: 1.05rem; opacity: 0.9; max-width: 600px; margin: 0 auto 2rem; }
-
-        /* Buttons */
-        .btn-primary-er {
-            background: var(--er-primary);
-            border-color: var(--er-primary);
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            letter-spacing: -0.5px;
             color: #fff;
-            border-radius: 10px;
-            padding: 12px 28px;
-            font-weight: 600;
-            transition: all 0.25s;
-            box-shadow: 0 4px 14px rgba(25,135,84,0.3);
-        }
-        .btn-primary-er:hover {
-            background: var(--er-dark);
-            border-color: var(--er-dark);
-            color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(25,135,84,0.4);
-        }
-        .btn-outline-er {
-            border: 2px solid rgba(255,255,255,0.4);
-            color: #fff;
-            border-radius: 10px;
-            padding: 12px 28px;
-            font-weight: 600;
-            transition: all 0.25s;
-            background: transparent;
-        }
-        .btn-outline-er:hover {
-            background: #fff;
-            color: var(--er-primary);
-            border-color: #fff;
-            transform: translateY(-2px);
-        }
-        .btn-outline-success-er {
-            border: 2px solid var(--er-primary);
-            color: var(--er-primary);
-            border-radius: 10px;
-            padding: 12px 28px;
-            font-weight: 600;
-            transition: all 0.25s;
-            background: transparent;
-        }
-        .btn-outline-success-er:hover {
-            background: var(--er-primary);
-            color: #fff;
-            border-color: var(--er-primary);
-            transform: translateY(-2px);
-        }
-        .btn-success-er {
-            background: var(--er-primary);
-            border-color: var(--er-primary);
-            color: #fff;
-            border-radius: 10px;
-            padding: 10px 22px;
-            font-weight: 600;
-            transition: all 0.25s;
-        }
-        .btn-success-er:hover {
-            background: var(--er-dark);
-            border-color: var(--er-dark);
-            color: #fff;
-            transform: translateY(-1px);
+            line-height: 1.15;
         }
 
-        /* Cards */
+        .hero-section .lead {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 550px;
+            margin: 0 auto 2rem;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* ===== CARDS ===== */
         .card {
-            border: none;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            border: 1px solid var(--gray-200);
+            border-radius: 14px;
             overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            background: #fff;
         }
+
         .card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+            border-color: var(--green-200);
         }
-        .card-img-top { border-radius: 16px 16px 0 0; }
-        .card-body { padding: 20px; }
-        .card-title { font-weight: 700; font-size: 0.95rem; }
-        .card-text { font-size: 0.85rem; color: #6b7280; }
 
-        /* Section */
-        .section-title { font-weight: 800; font-size: 1.75rem; color: #1f2937; margin-bottom: 0.5rem; }
-        .section-subtitle { font-size: 0.95rem; color: #6b7280; margin-bottom: 2rem; }
+        .card-img-top {
+            border-radius: 0;
+        }
 
-        /* Footer */
-        .footer { background: #0f172a; color: #94a3b8; padding: 60px 0 30px; }
-        .footer h5, .footer h6 { color: #f1f5f9; font-weight: 700; }
-        .footer a { color: #94a3b8; text-decoration: none; transition: color 0.2s; }
-        .footer a:hover { color: #fff; }
-        .footer .social-link { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.08); transition: all 0.2s; }
-        .footer .social-link:hover { background: var(--er-primary); color: #fff; }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); margin-top: 40px; padding-top: 20px; }
+        .card-body { padding: 18px; }
 
-        /* Bottom Nav */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 1030; background: #fff; border-top: 1px solid #e9ecef; box-shadow: 0 -2px 10px rgba(0,0,0,0.06); }
+        .card-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--gray-900);
+        }
+
+        .card-text {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+
+        /* ===== SECTIONS ===== */
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-header h2 {
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .section-header p {
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .section-line {
+            width: 40px;
+            height: 3px;
+            background: var(--green-500);
+            border-radius: 2px;
+            margin: 12px auto 0;
+        }
+
+        /* ===== CATEGORY SECTION ===== */
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .category-header h2 {
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: var(--gray-900);
+            margin: 0;
+        }
+
+        .category-line {
+            width: 32px;
+            height: 3px;
+            background: var(--green-500);
+            border-radius: 2px;
+            margin-top: 8px;
+        }
+
+        /* ===== TESTIMONIALS ===== */
+        .testimonial-card {
+            border: 1px solid var(--gray-200);
+            border-radius: 14px;
+            padding: 24px;
+            background: #fff;
+            transition: all 0.2s;
+            height: 100%;
+        }
+
+        .testimonial-card:hover {
+            border-color: var(--green-200);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+        }
+
+        /* ===== CTA SECTION ===== */
+        .cta-section {
+            background: linear-gradient(135deg, var(--green-700) 0%, var(--green-600) 100%);
+            color: #fff;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .cta-section h3 {
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .cta-section .lead {
+            color: rgba(255,255,255,0.85);
+            margin-bottom: 24px;
+        }
+
+        .cta-section .btn-light {
+            border-radius: 10px;
+            font-weight: 600;
+            padding: 12px 32px;
+            color: var(--green-700);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--gray-900);
+            color: var(--gray-400);
+            padding: 56px 0 0;
+        }
+
+        .footer-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .footer-brand i {
+            color: var(--green-500);
+        }
+
+        .footer-desc {
+            font-size: 0.85rem;
+            color: var(--gray-400);
+            line-height: 1.7;
+            max-width: 300px;
+        }
+
+        .footer h6 {
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links a {
+            color: var(--gray-400);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+            transform: translateX(3px);
+        }
+
+        .footer-contact li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            color: var(--gray-400);
+        }
+
+        .footer-contact li i {
+            color: var(--green-500);
+            font-size: 0.9rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .footer-social a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            color: var(--gray-400);
+            font-size: 1rem;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .footer-social a:hover {
+            background: var(--green-600);
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .footer-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            margin: 40px 0 0;
+        }
+
+        .footer-bottom {
+            padding: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray-500);
+        }
+
+        @media (max-width: 991.98px) {
+            .footer-bottom {
+                flex-direction: column;
+                gap: 8px;
+                text-align: center;
+            }
+        }
+
+        /* ===== BOTTOM NAV (Mobile) ===== */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            background: #fff;
+            border-top: 1px solid var(--gray-200);
+            box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+        }
+
         .bottom-nav .nav-item { flex: 1; text-align: center; padding: 6px 0 4px; }
-        .bottom-nav .nav-item.dropup { position: relative; }
-        .bottom-nav .nav-link { display: flex; flex-direction: column; align-items: center; font-size: 0.7rem; color: #6c757d; padding: 0; border: 0; background: none; }
-        .bottom-nav .nav-link i { font-size: 1.25rem; margin-bottom: 2px; }
-        .bottom-nav .nav-link.active { color: var(--er-primary) !important; }
-        .bottom-nav .nav-link.active i { font-weight: 700; }
-        .bottom-nav .dropdown-menu { bottom: 100%; margin-bottom: 8px; left: 50%; transform: translateX(-50%); min-width: 160px; border-radius: 12px; box-shadow: 0 -4px 20px rgba(0,0,0,0.12); border: none; padding: 8px; }
-        .bottom-nav .dropdown-menu .dropdown-item { border-radius: 8px; padding: 10px 14px; font-size: 0.9rem; }
-        .bottom-nav .dropdown-menu .dropdown-item i { margin-right: 10px; width: 18px; text-align: center; }
-        .bottom-nav .dropdown-menu .dropdown-item:hover { background: var(--er-primary); color: #fff; }
 
-        /* Misc */
-        .nav-link.active { color: var(--er-primary) !important; font-weight: 600; }
+        .bottom-nav .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.65rem;
+            color: var(--gray-400) !important;
+            padding: 0;
+            border: 0;
+            background: none;
+            font-weight: 500;
+        }
+
+        .bottom-nav .nav-link i { font-size: 1.2rem; margin-bottom: 2px; }
+
+        .bottom-nav .nav-link.active {
+            color: var(--green-600) !important;
+            font-weight: 600;
+        }
+
+        .bottom-nav .dropdown-menu {
+            bottom: 100%;
+            margin-bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            min-width: 160px;
+            border-radius: 12px;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.1);
+            border: 1px solid var(--gray-200);
+            padding: 6px;
+        }
+
+        .bottom-nav .dropdown-menu .dropdown-item {
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+        }
+
+        .bottom-nav .dropdown-menu .dropdown-item:hover {
+            background: var(--green-50);
+            color: var(--green-700);
+        }
+
+        /* ===== NAV DROPDOWN ===== */
+        .nav-dropdown-menu {
+            min-width: 160px;
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            padding: 6px;
+            background: #fff;
+            margin-top: 4px !important;
+        }
+
+        .nav-dropdown-menu .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 14px;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+        }
+
+        .nav-dropdown-menu .dropdown-item:hover {
+            background: var(--green-50);
+            color: var(--green-700);
+        }
+
+        .nav-dropdown-menu .dropdown-item.active {
+            background: var(--green-600) !important;
+            color: #fff !important;
+        }
+
+        /* ===== MISC ===== */
         .card-img-fixed { height: 200px; object-fit: cover; }
         .card-img-car { height: 180px; object-fit: cover; }
 
-        /* Floating WhatsApp */
-        .wa-float { position: fixed; bottom: 100px; right: 20px; z-index: 1040; display: flex; align-items: center; justify-content: center; width: 54px; height: 54px; background: #25D366; color: #fff; border-radius: 50%; text-decoration: none; transition: all 0.25s; border: none; }
-        .wa-float:hover { transform: scale(1.1); color: #fff; }
-        .wa-float i { font-size: 1.65rem; }
-        @media (min-width: 992px) { .wa-float { bottom: 30px; right: 30px; width: 60px; height: 60px; } .wa-float i { font-size: 1.85rem; } }
-        @media (max-width: 991.98px) { .wa-float { width: 50px; height: 50px; } .wa-float i { font-size: 1.5rem; } }
-
-        /* No shadow on modals */
-        .modal-content { box-shadow: none !important; }
-
-        /* Navbar dropdowns */
-        .nav-dropdown-toggle { font-weight: 500; color: #374151 !important; padding: 8px 16px !important; border-radius: 8px !important; outline: none !important; box-shadow: none !important; transition: none !important; }
-        .nav-dropdown-toggle:focus, .nav-dropdown-toggle:active { outline: none !important; box-shadow: none !important; background: transparent !important; }
-        .nav-dropdown-menu { min-width: 160px; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 6px; background: #fff; margin-top: 4px !important; }
-        .nav-dropdown-menu .dropdown-item { border-radius: 6px; padding: 8px 14px; font-size: 0.875rem; color: #374151; outline: none !important; transition: none !important; }
-        .nav-dropdown-menu .dropdown-item:focus, .nav-dropdown-menu .dropdown-item:active { background: transparent !important; box-shadow: none !important; outline: none !important; color: #374151 !important; }
-        .nav-dropdown-menu .dropdown-item.active,
-        .nav-dropdown-menu .dropdown-item.active:hover,
-        .nav-dropdown-menu .dropdown-item.active:visited,
-        .nav-dropdown-menu .dropdown-item.active:focus,
-        .nav-dropdown-menu .dropdown-item.active:link {
-            background-color: var(--er-primary) !important;
-            background: var(--er-primary) !important;
-            color: #ffffff !important;
-            border-color: var(--er-primary) !important;
+        /* ===== FLOATING WHATSAPP ===== */
+        .wa-float {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 1040;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            background: #25D366;
+            color: #fff;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(37,211,102,0.3);
         }
 
-        /* Mobile language dropdown (smaller) */
-        .mobile-lang-toggle { font-size: 0.85rem !important; padding: 4px 8px !important; border-radius: 6px !important; color: #374151 !important; outline: none !important; box-shadow: none !important; }
-        .mobile-lang-toggle:focus, .mobile-lang-toggle:active { outline: none !important; box-shadow: none !important; background: transparent !important; }
-        .navbar-nav .mobile-lang-dropdown { min-width: 140px; border-radius: 10px; border: 1px solid #e5e7eb; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 6px; background: #fff; }
-        .navbar-nav .mobile-lang-dropdown .dropdown-item { border-radius: 6px; padding: 8px 12px; font-size: 0.85rem; color: #374151; outline: none !important; }
-        .navbar-nav .mobile-lang-dropdown .dropdown-item:focus, .navbar-nav .mobile-lang-dropdown .dropdown-item:active { background: transparent !important; box-shadow: none !important; outline: none !important; color: #374151 !important; }
-        .navbar-nav .mobile-lang-dropdown .dropdown-item.active,
-        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:hover,
-        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:visited,
-        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:focus,
-        .navbar-nav .mobile-lang-dropdown .dropdown-item.active:link {
-            background-color: var(--er-primary) !important;
-            background: var(--er-primary) !important;
-            color: #ffffff !important;
-            border-color: var(--er-primary) !important;
+        .wa-float:hover {
+            transform: scale(1.08);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(37,211,102,0.4);
         }
 
-        .dropdown-menu .dropdown-item.active { color: #ffffff !important; }
+        .wa-float i { font-size: 1.5rem; }
 
+        @media (min-width: 992px) {
+            .wa-float { bottom: 30px; right: 30px; width: 56px; height: 56px; }
+            .wa-float i { font-size: 1.7rem; }
+        }
+
+        /* ===== MOBILE ===== */
         @media (max-width: 991.98px) {
             main { padding-bottom: 68px; }
             .footer { padding-bottom: 90px; }
-            .hero-section { padding: 60px 0 80px; }
-            .navbar-nav .mobile-lang-dropdown { position: absolute; right: 0; left: auto; top: 100%; transform: none; }
+            .hero-section { padding: 50px 0 70px; }
+        }
+
+        /* ===== MOBILE LANG DROPDOWN ===== */
+        .mobile-lang-toggle {
+            font-size: 0.85rem !important;
+            padding: 4px 8px !important;
+            border-radius: 6px !important;
+            color: var(--gray-600) !important;
+        }
+
+        .navbar-nav .mobile-lang-dropdown {
+            min-width: 140px;
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            padding: 6px;
+            background: #fff;
+        }
+
+        .navbar-nav .mobile-lang-dropdown .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+        }
+
+        .navbar-nav .mobile-lang-dropdown .dropdown-item.active {
+            background: var(--green-600) !important;
+            color: #fff !important;
+        }
+
+        .dropdown-menu .dropdown-item.active { color: #fff !important; }
+
+        .modal-content { border: 1px solid var(--gray-200); border-radius: 14px; }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            gap: 4px;
+        }
+
+        .pagination .page-link {
+            border-radius: 8px !important;
+            border: 1px solid #e5e7eb !important;
+            color: #4b5563 !important;
+            padding: 7px 13px !important;
+            font-size: 0.85rem !important;
+            background-color: #fff !important;
+            line-height: 1.4 !important;
+            min-width: 36px !important;
+            text-align: center !important;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+            border-color: #d1d5db !important;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #16a34a !important;
+            border-color: #16a34a !important;
+            color: #fff !important;
+        }
+
+        .pagination .page-item.disabled .page-link {
+            background-color: #f9fafb !important;
+            color: #d1d5db !important;
+            border-color: #f3f4f6 !important;
         }
     </style>
     @stack('styles')
 </head>
 <body>
-    @php $navCategories = \App\Models\DestinationCategory::where('is_active', true)->get(); @endphp
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    @php
+        $navCategories = \App\Models\DestinationCategory::where('is_active', true)->get();
+        $siteSettings = \App\Models\Setting::pluck('value', 'key')->toArray();
+    @endphp
+
+    <nav class="navbar navbar-expand-lg sticky-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand text-success" href="{{ route('home') }}">
+            <a class="navbar-brand" href="{{ route('home') }}">
                 <i class="bi bi-car-front-fill"></i> ExploreRide
             </a>
 
             <ul class="navbar-nav flex-row d-lg-none align-items-center">
-                <li class="nav-item dropdown" style="position:relative;">
+                <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle mobile-lang-toggle" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-globe"></i> {{ session('locale', 'id') == 'en' ? 'EN' : 'ID' }}
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end mobile-lang-dropdown" data-bs-popper="none">
+                    <ul class="dropdown-menu dropdown-menu-end mobile-lang-dropdown">
                         <li><a class="dropdown-item {{ session('locale') == 'id' || !session('locale') ? 'active' : '' }}" href="{{ route('lang.switch', 'id') }}">{{ __('Indonesia') }}</a></li>
                         <li><a class="dropdown-item {{ session('locale') == 'en' ? 'active' : '' }}" href="{{ route('lang.switch', 'en') }}">{{ __('Inggris') }}</a></li>
                     </ul>
@@ -249,21 +678,21 @@
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ route('home') }}">{{ __('Beranda') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">{{ __('Beranda') }}</a></li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle nav-dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ __('Destinasi') }}</a>
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">{{ __('Destinasi') }}</a>
                         <ul class="dropdown-menu nav-dropdown-menu">
                             @foreach($navCategories as $cat)
                             <li><a class="dropdown-item" href="{{ route('destinations.category', $cat->slug) }}">{{ __($cat->name) }}</a></li>
                             @endforeach
                         </ul>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('cars') }}">{{ __('Mobil') }}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('packages') }}">{{ __('Paket Wisata') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('cars') ? 'active' : '' }}" href="{{ route('cars') }}">{{ __('Mobil') }}</a></li>
+                    <li class="nav-item"><a class="nav-link {{ request()->routeIs('packages') ? 'active' : '' }}" href="{{ route('packages') }}">{{ __('Paket Wisata') }}</a></li>
                 </ul>
                 <ul class="navbar-nav d-none d-lg-flex">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle nav-dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-globe"></i> {{ session('locale', 'id') == 'en' ? __('Inggris') : __('Indonesia') }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end nav-dropdown-menu">
@@ -275,27 +704,25 @@
                 <ul class="navbar-nav">
                     @auth('customer')
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle nav-dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                                {{ Auth::guard('customer')->user()->name }}
+                            <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i> {{ Auth::guard('customer')->user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end nav-dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ route('booking.my') }}">{{ __('Pesanan Saya') }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('booking.my') }}"><i class="bi bi-receipt me-2"></i>{{ __('Pesanan Saya') }}</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{{ __('Logout') }}</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-box-arrow-right me-2"></i>{{ __('Logout') }}</a></li>
                             </ul>
                             <form id="logout-form" action="{{ route('customer.logout') }}" method="POST" class="d-none">@csrf</form>
                         </li>
                     @else
-                        <li class="nav-item"><a class="btn btn-primary-er btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#loginModal" style="font-size:0.85rem;padding:6px 18px;">{{ __('Masuk') }}</a></li>
+                        <li class="nav-item"><a class="btn btn-green btn-sm" href="#" data-bs-toggle="modal" data-bs-target="#loginModal" style="font-size:0.85rem;padding:7px 20px;">{{ __('Masuk') }}</a></li>
                     @endauth
                 </ul>
             </div>
         </div>
     </nav>
 
-    @php
-        $currentRoute = request()->route()?->getName() ?? '';
-    @endphp
+    @php $currentRoute = request()->route()?->getName() ?? ''; @endphp
 
     <main>
         @yield('content')
@@ -305,49 +732,65 @@
         <div class="container">
             <div class="row g-4">
                 <div class="col-lg-4">
-                    <h5 class="mb-3"><i class="bi bi-car-front-fill text-success"></i> ExploreRide</h5>
-                    <p class="small mb-3">{{ __('Solusi transportasi & wisata terpercaya untuk liburan Anda.') }}</p>
-                    <div class="d-flex gap-2">
-                        <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
-                        <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
-                        <a href="#" class="social-link"><i class="bi bi-youtube"></i></a>
+                    <div class="footer-brand">
+                        <i class="bi bi-car-front-fill"></i> ExploreRide
+                    </div>
+                    <p class="footer-desc">{{ __('Solusi transportasi & wisata terpercaya untuk liburan Anda.') }}</p>
+                    <div class="footer-social">
+                        @if(!empty($siteSettings['instagram']))
+                        <a href="{{ $siteSettings['instagram'] }}" target="_blank"><i class="bi bi-instagram"></i></a>
+                        @endif
+                        @if(!empty($siteSettings['facebook']))
+                        <a href="{{ $siteSettings['facebook'] }}" target="_blank"><i class="bi bi-facebook"></i></a>
+                        @endif
+                        @if(!empty($siteSettings['twitter']))
+                        <a href="{{ $siteSettings['twitter'] }}" target="_blank"><i class="bi bi-twitter-x"></i></a>
+                        @endif
                     </div>
                 </div>
-                <div class="col-lg-2">
-                    <h6 class="mb-3">{{ __('Layanan') }}</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><a href="{{ route('cars') }}">{{ __('Sewa Mobil Lepas Kunci') }}</a></li>
-                        <li class="mb-2"><a href="{{ route('cars') }}">{{ __('Sewa Mobil + Sopir') }}</a></li>
-                        <li class="mb-2"><a href="{{ route('packages') }}">{{ __('Paket Wisata') }}</a></li>
+                <div class="col-lg-2 col-6">
+                    <h6>{{ __('Layanan') }}</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ route('cars') }}">{{ __('Sewa Mobil') }}</a></li>
+                        <li><a href="{{ route('packages') }}">{{ __('Paket Wisata') }}</a></li>
                     </ul>
                 </div>
-                <div class="col-lg-2">
-                    <h6 class="mb-3">{{ __('Destinasi') }}</h6>
-                    <ul class="list-unstyled small">
+                <div class="col-lg-2 col-6">
+                    <h6>{{ __('Destinasi') }}</h6>
+                    <ul class="footer-links">
                         @foreach($navCategories as $cat)
-                        <li class="mb-2"><a href="{{ route('destinations.category', $cat->slug) }}">{{ __($cat->name) }}</a></li>
+                        <li><a href="{{ route('destinations.category', $cat->slug) }}">{{ __($cat->name) }}</a></li>
                         @endforeach
                     </ul>
                 </div>
                 <div class="col-lg-4">
-                    <h6 class="mb-3">{{ __('Kontak') }}</h6>
-                    <ul class="list-unstyled small">
-                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>{{ __('Solusi transportasi & wisata terpercaya.') }}</li>
-                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>0812-3456-7890</li>
-                        <li class="mb-2"><i class="bi bi-envelope me-2"></i>info@exploreride.com</li>
+                    <h6>{{ __('Kontak') }}</h6>
+                    <ul class="footer-contact list-unstyled">
+                        @if(!empty($siteSettings['address']))
+                        <li><i class="bi bi-geo-alt"></i><span>{{ $siteSettings['address'] }}</span></li>
+                        @endif
+                        @if(!empty($siteSettings['phone']))
+                        <li><i class="bi bi-telephone"></i><span>{{ $siteSettings['phone'] }}</span></li>
+                        @endif
+                        @if(!empty($siteSettings['email']))
+                        <li><i class="bi bi-envelope"></i><span>{{ $siteSettings['email'] }}</span></li>
+                        @endif
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom text-center">
-                <p class="small mb-0">&copy; {{ date('Y') }} ExploreRide. {{ __('All rights reserved.') }}</p>
+            <hr class="footer-divider">
+            <div class="footer-bottom">
+                <span>&copy; {{ date('Y') }} ExploreRide. {{ __('All rights reserved.') }}</span>
+                <span>{{ __('Dibuat dengan') }} <i class="bi bi-heart-fill" style="color: #ef4444; font-size: 0.7rem;"></i> {{ __('di Indonesia') }}</span>
             </div>
         </div>
     </footer>
 
-    <a href="https://wa.me/6281234567890?text=Halo%20ExploreRide%2C%20saya%20ingin%20bertanya" class="wa-float" target="_blank" rel="noopener" title="Chat WhatsApp">
+    @if(!empty($siteSettings['whatsapp']))
+    <a href="https://wa.me/{{ $siteSettings['whatsapp'] }}?text=Halo%20ExploreRide%2C%20saya%20ingin%20bertanya" class="wa-float" target="_blank" rel="noopener" title="Chat WhatsApp">
         <i class="bi bi-whatsapp"></i>
     </a>
+    @endif
 
     <ul class="nav bottom-nav d-lg-none">
         <li class="nav-item">
@@ -356,12 +799,12 @@
                 <span>{{ __('Beranda') }}</span>
             </a>
         </li>
-        <li class="nav-item dropup" id="bottomNavDestinasi">
+        <li class="nav-item dropup">
             <a class="nav-link dropdown-toggle {{ str_starts_with($currentRoute, 'destinations') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown">
                 <i class="bi bi-compass{{ str_starts_with($currentRoute, 'destinations') ? '-fill' : '' }}"></i>
                 <span>{{ __('Destinasi') }}</span>
             </a>
-            <ul class="dropdown-menu mobile-lang-dropdown" data-bs-popper="none">
+            <ul class="dropdown-menu mobile-lang-dropdown">
                 @foreach($navCategories as $cat)
                 <li><a class="dropdown-item" href="{{ route('destinations.category', $cat->slug) }}">{{ __($cat->name) }}</a></li>
                 @endforeach
@@ -379,16 +822,16 @@
                 <span>{{ __('Paket') }}</span>
             </a>
         </li>
-        <li class="nav-item dropup" id="bottomNavProfile">
+        <li class="nav-item dropup">
             @auth('customer')
             <a class="nav-link dropdown-toggle {{ str_starts_with($currentRoute, 'booking') ? 'active' : '' }}" href="#" data-bs-toggle="dropdown">
                 <i class="bi bi-person{{ str_starts_with($currentRoute, 'booking') ? '-fill' : '' }}"></i>
                 <span>{{ Auth::guard('customer')->user()->name }}</span>
             </a>
-            <ul class="dropdown-menu" data-bs-popper="none">
-                <li><a class="dropdown-item" href="{{ route('booking.my') }}"><i class="bi bi-calendar-check"></i> {{ __('Pesanan Saya') }}</a></li>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="{{ route('booking.my') }}"><i class="bi bi-receipt me-2"></i>{{ __('Pesanan Saya') }}</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('bottom-logout-form').submit();"><i class="bi bi-box-arrow-right"></i> {{ __('Logout') }}</a></li>
+                <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('bottom-logout-form').submit();"><i class="bi bi-box-arrow-right me-2"></i>{{ __('Logout') }}</a></li>
             </ul>
             <form id="bottom-logout-form" action="{{ route('customer.logout') }}" method="POST" class="d-none">@csrf</form>
             @else
@@ -402,7 +845,14 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script>AOS.init({ duration: 600, once: true, offset: 50 });</script>
+    <script>AOS.init({ duration: 500, once: true, offset: 40 });</script>
+
+    <script>
+    window.addEventListener('scroll', function() {
+        var nav = document.getElementById('mainNav');
+        if (nav) { nav.classList.toggle('scrolled', window.scrollY > 10); }
+    });
+    </script>
 
     @include('components.login-modal')
     @include('components.register-modal')

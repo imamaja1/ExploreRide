@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\TourPackageController;
 use App\Http\Controllers\Admin\DestinationController;
 use App\Http\Controllers\Admin\DestinationCategoryController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Driver\DashboardController as DriverDashboardController;
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\BookingController as FrontendBookingController;
@@ -24,9 +25,9 @@ use App\Http\Controllers\Frontend\SseController;
 
 // ========== CUSTOMER AUTH ==========
 Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('customer.login');
-Route::post('/login', [CustomerAuthController::class, 'login']);
+Route::post('/login', [CustomerAuthController::class, 'login'])->middleware('throttle:5,1');
 Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');
-Route::post('/register', [CustomerAuthController::class, 'register']);
+Route::post('/register', [CustomerAuthController::class, 'register'])->middleware('throttle:3,1');
 Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
 
 // Google OAuth
@@ -45,7 +46,7 @@ Route::get('/package/{slug}', [HomeController::class, 'packageDetail'])->name('p
 Route::get('/destinasi/kategori/{category}', [HomeController::class, 'destinationsByCategory'])->name('destinations.category');
 Route::get('/destinasi/{slug}', [HomeController::class, 'destinationDetail'])->name('destination.detail');
 
-Route::post('/testimonials', [FrontendTestimonialController::class, 'store'])->name('testimonials.store');
+Route::post('/testimonials', [FrontendTestimonialController::class, 'store'])->name('testimonials.store')->middleware('throttle:5,1');
 
 Route::middleware(['customer.auth'])->group(function () {
     Route::get('/booking', [FrontendBookingController::class, 'create'])->name('booking.create');
@@ -57,11 +58,13 @@ Route::middleware(['customer.auth'])->group(function () {
 });
 
 // ========== SSE ==========
-Route::get('/sse/booking/{id}', [SseController::class, 'stream'])->name('sse.booking');
+Route::middleware(['customer.auth'])->group(function () {
+    Route::get('/sse/booking/{id}', [SseController::class, 'stream'])->name('sse.booking');
+});
 
 // ========== ADMIN AUTH ==========
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 // ========== ADMIN PANEL ==========
@@ -78,6 +81,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('destination-categories/{category}/toggle', [DestinationCategoryController::class, 'toggle'])->name('destination-categories.toggle');
     Route::resource('testimonials', TestimonialController::class);
 
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+
     Route::get('bookings', [BookingController::class, 'index'])->name('bookings.index');
     Route::get('bookings/{id}', [BookingController::class, 'show'])->name('bookings.show');
     Route::post('bookings/{id}/confirm-payment', [BookingController::class, 'confirmPayment'])->name('bookings.confirm-payment');
@@ -87,7 +93,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 // ========== DRIVER AUTH ==========
 Route::get('/driver/login', [DriverAuthController::class, 'showLogin'])->name('driver.login');
-Route::post('/driver/login', [DriverAuthController::class, 'login']);
+Route::post('/driver/login', [DriverAuthController::class, 'login'])->middleware('throttle:5,1');
 Route::post('/driver/logout', [DriverAuthController::class, 'logout'])->name('driver.logout');
 
 // ========== DRIVER PANEL ==========

@@ -23,7 +23,15 @@ class GoogleSocialiteController extends Controller
             return redirect()->route('customer.login')->withErrors(['email' => 'Google login failed.']);
         }
 
-        $customer = Customer::where('google_id', $googleUser->getId())->orWhere('email', $googleUser->getEmail())->first();
+        $email = $googleUser->getEmail();
+
+        if (!$email) {
+            return redirect()->route('customer.login')->withErrors(['email' => 'Tidak dapat mendapatkan email dari Google. Silakan coba lagi atau gunakan email lain.']);
+        }
+
+        $customer = Customer::where('google_id', $googleUser->getId())
+            ->orWhere('email', $email)
+            ->first();
 
         if ($customer) {
             if (!$customer->google_id) {
@@ -35,7 +43,7 @@ class GoogleSocialiteController extends Controller
 
         $customer = Customer::create([
             'name' => $googleUser->getName(),
-            'email' => $googleUser->getEmail(),
+            'email' => $email,
             'google_id' => $googleUser->getId(),
             'avatar' => $googleUser->getAvatar(),
             'password' => Hash::make(str()->random(16)),

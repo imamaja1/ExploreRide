@@ -53,7 +53,8 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 - Sidebar vertikal (lebar 250px, warna hijau tua `#145c32`)
 - Navbar atas dengan logo, language switcher, dropdown user
 - Content area dengan alert flash (success/error)
-- Bootstrap 5.3.3 + Bootstrap Icons + Chart.js 4.4.7
+- Bootstrap 5.3.3 + Bootstrap Icons + Chart.js 4.4.7 + SweetAlert2
+- Security Headers: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy
 
 ### Localization
 - Semua UI text menggunakan helper `__()` (Blade + PHP)
@@ -106,7 +107,8 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 - Paginated (15/page), 7 kolom
 - Kolom: Kode Booking (link ke detail), Pelanggan, Mobil/Paket, Tanggal (range), Total (format Rp), Status (color-coded badge), Aksi (tombol eye)
 - 6 status dengan warna badge: pending (secondary), waiting_payment (warning), confirmed (primary), in_progress (info), completed (success), cancelled (danger)
-- Tidak ada search/filter (belum diimplementasikan)
+- **Search**: kode booking, nama pelanggan
+- **Filter**: status dropdown (Semua, Pending, Waiting Payment, Confirmed, In Progress, Completed, Cancelled)
 
 ### Detail (`/admin/bookings/{id}`)
 - Layout 2 kolom
@@ -138,6 +140,7 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 - Paginated (10/page), 7 kolom
 - Kolom: Foto (thumbnail 60x40), Nama + Brand, Plat Nomor, Harga/hari (format Rp), Transmisi (badge Manual/Matic), Status (badge Aktif/Nonaktif), Aksi (edit/delete)
 - `with_driver` boolean (tidak ditampilkan di tabel)
+- **Search**: nama, plat nomor
 
 ### Form (Create/Edit)
 - Layout row g-3 (2 kolom per baris)
@@ -157,6 +160,7 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 ### Index (`/admin/drivers`)
 - Paginated (10/page), 6 kolom
 - Kolom: Nama, Email, No. HP, Plat Nomor, Status (badge Aktif/Nonaktif), Aksi (edit/delete)
+- **Search**: nama, email, no. HP, plat nomor
 
 ### Form (Create/Edit)
 - Fields: name, email, phone, whatsapp, address (textarea), plate_number, password (create: required, edit: optional), sim_photo (file upload), is_active (checkbox)
@@ -189,6 +193,7 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 ### Index (`/admin/banks`)
 - Paginated (10/page), 5 kolom
 - Kolom: Nama Bank, No. Rekening, Atas Nama, Status (badge), Aksi (edit/delete)
+- **Search**: nama bank, no. rekening
 
 ### Form (Create/Edit)
 - Fields: name, account_number, account_name, logo (file upload), is_active (checkbox)
@@ -201,6 +206,7 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 ### Index (`/admin/tour-packages`)
 - Paginated (10/page), 7 kolom
 - Kolom: Foto (thumbnail), Nama, Harga (Rp), Durasi (hari), Destinasi (count), Status (badge), Aksi (edit/delete)
+- **Search**: nama paket
 
 ### Form (Create/Edit)
 - Fields: name, slug, description (textarea), price, duration_days (number), main_photo, includes (text), excludes (text)
@@ -217,6 +223,7 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 ### Index (`/admin/destinations`)
 - Paginated (15/page), 7 kolom
 - Kolom: Foto (thumbnail 60x40), Nama, Kategori (badge, translated), Lokasi, Rating (bintang), Status (badge), Aksi (edit/delete)
+- **Search**: nama, lokasi
 
 ### Form (Create/Edit)
 - Fields: name, slug (manual input, contoh: "nama-destinasi"), category (select: Pantai/Gunung/Air Terjun), location, rating (number 0-5, step 0.1), main_photo, description (textarea), is_active (checkbox)
@@ -248,6 +255,7 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 ### Index (`/admin/testimonials`)
 - Paginated (15/page), 6 kolom
 - Kolom: No, Nama, Rating (bintang kuning 1-5), Pesan (truncated 80 chars), Status (badge Aktif/Pending), Aksi (edit/delete)
+- **Search**: nama, pesan
 
 ### Form (Create/Edit)
 - Fields: name, rating (select dropdown 5-1), photo (file upload), message (textarea), is_active (checkbox)
@@ -273,6 +281,10 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 | FR-A12 | Language switcher (Indonesia/Inggris) | Medium |
 | FR-A13 | Notifikasi email: konfirmasi booking (ke customer) & penugasan driver (ke driver) | High |
 | FR-A14 | Logout admin | High |
+| FR-A15 | Rate limiting pada login admin (5 attempts/menit) | High |
+| FR-A16 | Password minimum 8 karakter untuk driver | High |
+| FR-A17 | Security Headers (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy) | High |
+| FR-A18 | Search/filter pada index views (bookings, cars, drivers, destinations, testimonials, banks, tour-packages) | Medium |
 
 ---
 
@@ -285,7 +297,10 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 
 ### Security
 - Middleware `auth` + `admin` di semua route (kecuali login)
-- Password di-hash (bcrypt)
+- Rate limiting pada login admin: 5 attempts/minute
+- Password minimum 8 karakter untuk pembuatan driver
+- Security Headers: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy
+- Password di-hash (bcrypt, 12 rounds)
 - Validasi server-side untuk semua input
 - File upload divalidasi (image type, max size)
 
@@ -325,12 +340,15 @@ Admin Panel ExploreRide adalah back-office application untuk mengelola seluruh d
 | GET/POST/PUT/DELETE | `/admin/destination-categories` | `admin.destination-categories.*` | `DestinationCategoryController` | `admin.destination-categories.*` |
 | POST | `/admin/destination-categories/{id}/toggle` | `admin.destination-categories.toggle` | `DestinationCategoryController@toggle` | — |
 | GET/POST/PUT/DELETE | `/admin/testimonials` | `admin.testimonials.*` | `TestimonialController` | `admin.testimonials.*` |
+| GET/POST/PUT/DELETE | `/admin/destination-categories` | `admin.destination-categories.*` | `DestinationCategoryController` | `admin.destination-categories.*` |
+| POST | `/admin/destination-categories/{id}/toggle` | `admin.destination-categories.toggle` | `DestinationCategoryController@toggle` | — |
+| GET/POST/PUT/DELETE | `/admin/testimonials` | `admin.testimonials.*` | `TestimonialController` | `admin.testimonials.*` |
 
 ---
 
 ## 19. Future Considerations
 
-- **Search & Filter**: Tambahkan search/filter di index bookings dan data master
+- **Search & Filter**: ✅ Sudah diimplementasikan pada bookings, cars, drivers, destinations, testimonials, banks, tour-packages
 - **Bulk Actions**: Delete/activate multiple records sekaligus
 - **Export Data**: CSV/Excel export untuk bookings, revenue, dan data master
 - **Activity Log**: Catat semua perubahan data oleh admin

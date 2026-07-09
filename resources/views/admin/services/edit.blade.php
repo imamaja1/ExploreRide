@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('title', __('Edit Layanan'))
 @section('content')
-<div class="page-title-border mb-4">
-    <h4 class="page-title">{{ __('Edit Layanan') }}</h4>
+<div class="page-header mb-4">
+    <h4 >{{ __('Edit Layanan') }}</h4>
 </div>
 <div class="card"><div class="card-body">
 <form method="POST" action="{{ route('admin.services.update', $service) }}">@csrf @method('PUT')
@@ -18,8 +18,8 @@
     <input type="checkbox" name="is_active" class="form-check-input" id="is_active" value="1" {{ old('is_active', $service->is_active) ? 'checked' : '' }}>
     <label class="form-check-label" for="is_active">{{ __('Aktif') }}</label>
 </div>
-<button type="submit" class="btn btn-success">{{ __('Update') }}</button>
-<a href="{{ route('admin.services.index') }}" class="btn btn-secondary">{{ __('Batal') }}</a>
+<button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
+<a href="{{ route('admin.services.index') }}" class="btn btn-outline-gray">{{ __('Batal') }}</a>
 </form>
 </div></div>
 @endsection

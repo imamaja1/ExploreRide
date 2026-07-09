@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Bank;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BankController extends Controller
 {
@@ -47,7 +48,7 @@ class BankController extends Controller
 
         Bank::create($data);
 
-        return redirect()->route('admin.banks.index')->with('success', 'Bank berhasil ditambahkan');
+        return redirect()->back()->with('success', __('Bank berhasil ditambahkan'));
     }
 
     public function edit(Bank $bank)
@@ -66,6 +67,9 @@ class BankController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
+            if ($bank->logo) {
+                Storage::disk('public')->delete($bank->logo);
+            }
             $data['logo'] = $request->file('logo')->store('banks', 'public');
         }
 
@@ -73,11 +77,14 @@ class BankController extends Controller
 
         $bank->update($data);
 
-        return redirect()->route('admin.banks.index')->with('success', 'Bank berhasil diupdate');
+        return redirect()->back()->with('success', __('Bank berhasil diupdate'));
     }
 
     public function destroy(Bank $bank)
     {
+        if ($bank->logo) {
+            Storage::disk('public')->delete($bank->logo);
+        }
         $bank->delete();
         return redirect()->route('admin.banks.index')->with('success', 'Bank berhasil dihapus');
     }

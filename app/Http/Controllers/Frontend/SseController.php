@@ -5,17 +5,26 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SseController extends Controller
 {
-    public function stream($id)
+    public function stream(Request $request, $id)
     {
+        $booking = Booking::findOrFail($id);
+
+        if ($booking->customer_id !== Auth::guard('customer')->id()) {
+            abort(403);
+        }
+
         $response = new StreamedResponse(function () use ($id) {
             $lastStatus = null;
             $lastDriverId = null;
+            $maxIterations = 1500;
+            $iterations = 0;
 
-            while (true) {
+            while ($iterations++ < $maxIterations) {
                 if (connection_aborted()) {
                     break;
                 }

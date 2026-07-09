@@ -36,7 +36,7 @@ class TestimonialController extends Controller
             'name' => 'required|string|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'message' => 'required|string',
-            'photo' => 'nullable|image|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -48,8 +48,7 @@ class TestimonialController extends Controller
 
         Testimonial::create($data);
 
-        return redirect()->route('admin.testimonials.index')
-            ->with('success', __('Testimoni berhasil ditambahkan!'));
+        return redirect()->back()->with('success', __('Testimoni berhasil ditambahkan'));
     }
 
     public function edit(Testimonial $testimonial)
@@ -63,7 +62,7 @@ class TestimonialController extends Controller
             'name' => 'required|string|max:255',
             'rating' => 'required|integer|min:1|max:5',
             'message' => 'required|string',
-            'photo' => 'nullable|image|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'is_active' => 'nullable|boolean',
         ]);
 
@@ -78,8 +77,7 @@ class TestimonialController extends Controller
 
         $testimonial->update($data);
 
-        return redirect()->route('admin.testimonials.index')
-            ->with('success', __('Testimoni berhasil diupdate!'));
+        return redirect()->back()->with('success', __('Testimoni berhasil diupdate'));
     }
 
     public function destroy(Testimonial $testimonial)

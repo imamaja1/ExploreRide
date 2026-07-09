@@ -6,7 +6,7 @@
 |---|---|
 | **Nama Produk** | ExploreRide |
 | **Platform** | Web-based App (Laravel + Blade) |
-| **Tech Stack** | Laravel, Blade, SSE, Bootstrap, kstmostofa/laravel-whatsapp |
+| **Tech Stack** | Laravel 11, Blade, SSE, Bootstrap 5, Chart.js, AOS.js, SweetAlert2, kstmostofa/laravel-whatsapp |
 | **Product Manager** | Nazmi |
 | **Status** | Draft / Ready for Review |
 
@@ -67,6 +67,21 @@ Homepage ExploreRide berfungsi sebagai **discovery layer** yang menampilkan reko
 
 ---
 
+## 3.5 Security Requirements
+
+| Feature | Detail |
+|---|---|
+| Rate Limiting | Login customer/admin/driver: 5 attempts/minute, Register: 3 attempts/minute |
+| Password Policy | Min 8 characters on registration & driver creation |
+| Security Headers | X-Content-Type-Options (nosniff), X-Frame-Options (DENY), X-XSS-Protection (1; mode=block), Referrer-Policy (strict-origin-when-cross-origin), Permissions-Policy (camera/microphone/geolocation denied) |
+| CSRF Protection | @csrf on all forms, meta tag in all layouts |
+| Password Hashing | Bcrypt with 12 rounds |
+| Input Validation | Server-side validation on all controllers |
+| Authorization | Role-based middleware (admin/driver/customer) |
+| Locale Whitelist | Only 'id' and 'en' accepted |
+
+---
+
 ## 4. Alur Pengguna & Sistem
 
 ### 4.1 Alur Pemesanan & Pembayaran (Sisi Pelanggan)
@@ -99,6 +114,8 @@ Homepage ExploreRide berfungsi sebagai **discovery layer** yang menampilkan reko
 | `tour_packages` | Paket wisata |
 | `tour_destinations` | Destinasi dalam paket wisata |
 | `destinations` | Destinasi wisata untuk homepage discovery (name, slug, category, location, rating, main_photo, is_active) |
+| `destination_categories` | Kategori destinasi (name, slug, is_active) — mengontrol visibilitas homepage |
+| `testimonials` | Testimoni pelanggan (name, rating, message, photo, is_active) |
 | `bookings` | Pesanan utama |
 | `payments` | Riwayat pembayaran + bukti transfer |
 
@@ -145,6 +162,8 @@ Homepage ExploreRide berfungsi sebagai **discovery layer** yang menampilkan reko
 | `/admin/banks` | CRUD bank |
 | `/admin/tour-packages` | CRUD paket wisata |
 | `/admin/destinations` | CRUD destinasi wisata |
+| `/admin/destination-categories` | CRUD + toggle kategori destinasi |
+| `/admin/testimonials` | CRUD testimoni |
 
 ### Driver Panel
 

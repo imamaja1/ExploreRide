@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class DriverController extends Controller
 {
@@ -41,7 +42,7 @@ class DriverController extends Controller
             'whatsapp' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'plate_number' => 'required|string|max:20',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string|min:8',
             'sim_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
@@ -55,7 +56,7 @@ class DriverController extends Controller
 
         User::create($data);
 
-        return redirect()->route('admin.drivers.index')->with('success', 'Driver berhasil ditambahkan');
+        return redirect()->back()->with('success', __('Driver berhasil ditambahkan'));
     }
 
     public function edit(User $driver)
@@ -72,12 +73,15 @@ class DriverController extends Controller
             'whatsapp' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'plate_number' => 'required|string|max:20',
-            'password' => 'nullable|string|min:6',
+            'password' => 'nullable|string|min:8',
             'sim_photo' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'is_active' => 'boolean',
         ]);
 
         if ($request->hasFile('sim_photo')) {
+            if ($driver->sim_photo) {
+                Storage::disk('public')->delete($driver->sim_photo);
+            }
             $data['sim_photo'] = $request->file('sim_photo')->store('sim', 'public');
         }
 
@@ -91,11 +95,14 @@ class DriverController extends Controller
 
         $driver->update($data);
 
-        return redirect()->route('admin.drivers.index')->with('success', 'Driver berhasil diupdate');
+        return redirect()->back()->with('success', __('Driver berhasil diupdate'));
     }
 
     public function destroy(User $driver)
     {
+        if ($driver->sim_photo) {
+            Storage::disk('public')->delete($driver->sim_photo);
+        }
         $driver->delete();
         return redirect()->route('admin.drivers.index')->with('success', 'Driver berhasil dihapus');
     }
