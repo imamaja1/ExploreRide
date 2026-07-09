@@ -5,31 +5,31 @@
                 <h4 class="fw-bold mb-0">{{ __('Daftar Akun') }}</h4>
             </div>
             <div class="modal-body px-4 py-4">
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 <div id="registerError" class="alert alert-danger d-none"></div>
 
                 <form id="registerForm" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('Nama Lengkap') }}</label>
-                        <input type="text" name="name" class="form-control" required>
+                        <label class="form-label fw-semibold" for="registerName">{{ __('Nama Lengkap') }}</label>
+                        <input type="text" name="name" class="form-control" id="registerName" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('Email') }}</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <label class="form-label fw-semibold" for="registerEmail">{{ __('Email') }}</label>
+                        <input type="email" name="email" class="form-control" id="registerEmail" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('No. Telepon') }}</label>
-                        <input type="text" name="phone" class="form-control">
+                        <label class="form-label fw-semibold" for="registerPhone">{{ __('No. Telepon') }}</label>
+                        <input type="text" name="phone" class="form-control" id="registerPhone">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('Password') }}</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label class="form-label fw-semibold" for="registerPassword">{{ __('Password') }}</label>
+                        <input type="password" name="password" class="form-control" id="registerPassword" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('Konfirmasi Password') }}</label>
-                        <input type="password" name="password_confirmation" class="form-control" required>
+                        <label class="form-label fw-semibold" for="registerPasswordConfirm">{{ __('Konfirmasi Password') }}</label>
+                        <input type="password" name="password_confirmation" class="form-control" id="registerPasswordConfirm" required>
                     </div>
                     <button type="submit" class="btn btn-success w-100 fw-bold py-2" id="registerBtn">{{ __('Daftar') }}</button>
                 </form>

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body p-4">
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
                 <h4 class="text-center fw-bold mb-4 text-success">{{ __('Tulis Testimoni') }}</h4>
 
                 <div id="testimonialError" class="alert alert-danger d-none"></div>
@@ -11,8 +11,8 @@
                 <form id="testimonialForm" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label">{{ __('Nama') }}</label>
-                        <input type="text" name="name" class="form-control" value="{{ Auth::guard('customer')->user()->name ?? '' }}" {{ Auth::guard('customer')->check() ? 'readonly' : '' }} required>
+                        <label class="form-label" for="testimonialName">{{ __('Nama') }}</label>
+                        <input type="text" name="name" class="form-control" id="testimonialName" value="{{ Auth::guard('customer')->user()->name ?? '' }}" {{ Auth::guard('customer')->check() ? 'readonly' : '' }} required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">{{ __('Rating') }}</label>

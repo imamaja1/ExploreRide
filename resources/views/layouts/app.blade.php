@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
     <title>ExploreRide - @yield('title', __('Sewa Mobil & Paket Wisata'))</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" integrity="sha384-XGjxtQfXaH2tnPFa9x+ruJTuLE3Aa6LhHSWRr1XeTyhezb4abCG4ccI5AkVDxqC+" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" integrity="sha384-ULJ5Wom5CFm/6iCb8Yams71+pVNI9+cP0g7k+WvCexbs+qc73TqupwyY/4B7ZcMZ" crossorigin="anonymous">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" integrity="sha384-/rJKQnzOkEo+daG0jMjU1IwwY9unxt1NBw3Ef2fmOJ3PW/TfAg2KXVoWwMZQZtw9" crossorigin="anonymous">
     <style>
         :root {
             --green-50: #f0fdf4;
@@ -658,7 +659,7 @@
         $siteSettings = \App\Models\Setting::pluck('value', 'key')->toArray();
     @endphp
 
-    <nav class="navbar navbar-expand-lg sticky-top" id="mainNav">
+    <nav class="navbar navbar-expand-lg sticky-top" id="mainNav" aria-label="Main navigation">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">
                 <i class="bi bi-car-front-fill"></i> ExploreRide
@@ -738,13 +739,13 @@
                     <p class="footer-desc">{{ __('Solusi transportasi & wisata terpercaya untuk liburan Anda.') }}</p>
                     <div class="footer-social">
                         @if(!empty($siteSettings['instagram']))
-                        <a href="{{ $siteSettings['instagram'] }}" target="_blank"><i class="bi bi-instagram"></i></a>
+                        <a href="{{ $siteSettings['instagram'] }}" target="_blank" rel="noopener"><i class="bi bi-instagram"></i></a>
                         @endif
                         @if(!empty($siteSettings['facebook']))
-                        <a href="{{ $siteSettings['facebook'] }}" target="_blank"><i class="bi bi-facebook"></i></a>
+                        <a href="{{ $siteSettings['facebook'] }}" target="_blank" rel="noopener"><i class="bi bi-facebook"></i></a>
                         @endif
                         @if(!empty($siteSettings['twitter']))
-                        <a href="{{ $siteSettings['twitter'] }}" target="_blank"><i class="bi bi-twitter-x"></i></a>
+                        <a href="{{ $siteSettings['twitter'] }}" target="_blank" rel="noopener"><i class="bi bi-twitter-x"></i></a>
                         @endif
                     </div>
                 </div>
@@ -792,7 +793,7 @@
     </a>
     @endif
 
-    <ul class="nav bottom-nav d-lg-none">
+    <nav class="nav bottom-nav d-lg-none" aria-label="Mobile navigation">
         <li class="nav-item">
             <a class="nav-link {{ $currentRoute == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
                 <i class="bi bi-house{{ $currentRoute == 'home' ? '-fill' : '' }}"></i>
@@ -841,10 +842,10 @@
             </a>
             @endauth
         </li>
-    </ul>
+    </nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" integrity="sha384-wziAfh6b/qT+3LrqebF9WeK4+J5sehS6FA10J1t3a866kJ/fvU5UwofWnQyzLtwu" crossorigin="anonymous"></script>
     <script>AOS.init({ duration: 500, once: true, offset: 40 });</script>
 
     <script>

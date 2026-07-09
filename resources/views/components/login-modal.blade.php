@@ -5,19 +5,19 @@
                 <h4 class="fw-bold mb-0">{{ __('Masuk') }}</h4>
             </div>
             <div class="modal-body px-4 py-4">
-                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close"></button>
 
                 <div id="loginError" class="alert alert-danger d-none"></div>
 
                 <form id="loginForm" method="POST">
                     @csrf
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('Email') }}</label>
-                        <input type="email" name="email" class="form-control" required>
+                        <label class="form-label fw-semibold" for="loginEmail">{{ __('Email') }}</label>
+                        <input type="email" name="email" class="form-control" id="loginEmail" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">{{ __('Password') }}</label>
-                        <input type="password" name="password" class="form-control" required>
+                        <label class="form-label fw-semibold" for="loginPassword">{{ __('Password') }}</label>
+                        <input type="password" name="password" class="form-control" id="loginPassword" required>
                     </div>
                     <div class="mb-3 form-check">
                         <input type="checkbox" name="remember" class="form-check-input" id="rememberModal">

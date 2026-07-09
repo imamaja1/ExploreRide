@@ -75,7 +75,7 @@
                 <div class="col-md-6 col-lg-3" data-aos="fade-up" data-aos-delay="{{ $loop->index * 80 }}">
                     <div class="card h-100">
                         @if($dest->main_photo)
-                            <img src="{{ asset('storage/' . $dest->main_photo) }}" class="card-img-top" style="height: 180px; object-fit: cover;">
+                            <img src="{{ asset('storage/' . $dest->main_photo) }}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{ $dest->name }}">
                         @else
                             <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
                                 <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
@@ -116,7 +116,7 @@
             <div class="col-md-4" data-aos="fade-up" data-aos-delay="{{ $loop->index * 80 }}">
                 <div class="testimonial-card">
                     @if($t->photo)
-                        <img src="{{ asset('storage/' . $t->photo) }}" class="rounded-circle mb-3" width="56" height="56" style="object-fit: cover;">
+                        <img src="{{ asset('storage/' . $t->photo) }}" class="rounded-circle mb-3" width="56" height="56" style="object-fit: cover;" alt="{{ $t->name }}">
                     @else
                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; background: var(--green-100); color: var(--green-600);">
                             <i class="bi bi-person fs-5"></i>
