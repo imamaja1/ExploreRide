@@ -10,17 +10,20 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $baseQuery = Booking::where('driver_id', auth()->id());
+
+        $stats = [
+            'total'       => (clone $baseQuery)->count(),
+            'confirmed'   => (clone $baseQuery)->where('status', 'confirmed')->count(),
+            'in_progress' => (clone $baseQuery)->where('status', 'in_progress')->count(),
+            'completed'   => $baseQuery->where('status', 'completed')->count(),
+        ];
+
         $bookings = Booking::with(['customer', 'car'])
             ->where('driver_id', auth()->id())
             ->orderBy('created_at', 'desc')
+            ->take(10)
             ->get();
-
-        $stats = [
-            'total' => $bookings->count(),
-            'confirmed' => $bookings->where('status', 'confirmed')->count(),
-            'in_progress' => $bookings->where('status', 'in_progress')->count(),
-            'completed' => $bookings->where('status', 'completed')->count(),
-        ];
 
         return view('driver.dashboard', compact('bookings', 'stats'));
     }

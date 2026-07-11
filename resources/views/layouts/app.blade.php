@@ -591,6 +591,10 @@
             color: var(--gray-600) !important;
         }
 
+        .navbar-nav.flex-row .nav-item.dropdown {
+            position: relative;
+        }
+
         .navbar-nav .mobile-lang-dropdown {
             min-width: 140px;
             border-radius: 10px;
@@ -598,6 +602,9 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             padding: 6px;
             background: #fff;
+            position: absolute;
+            right: 0;
+            top: 100%;
         }
 
         .navbar-nav .mobile-lang-dropdown .dropdown-item {
@@ -654,11 +661,6 @@
     @stack('styles')
 </head>
 <body>
-    @php
-        $navCategories = \App\Models\DestinationCategory::where('is_active', true)->get();
-        $siteSettings = \App\Models\Setting::pluck('value', 'key')->toArray();
-    @endphp
-
     <nav class="navbar navbar-expand-lg sticky-top" id="mainNav" aria-label="Main navigation">
         <div class="container">
             <a class="navbar-brand" href="{{ route('home') }}">

@@ -25,18 +25,8 @@
                     <td>{{ $booking->start_date }} ({{ $booking->duration_days }} {{ __('hari') }})</td>
                     <td>{{ __('Rp') }} {{ number_format($booking->total_price, 0, ',', '.') }}</td>
                     <td>
-                        @php
-                            $badge = match($booking->status) {
-                                'pending' => 'warning',
-                                'waiting_payment' => 'info',
-                                'confirmed' => 'success',
-                                'in_progress' => 'primary',
-                                'completed' => 'secondary',
-                                'cancelled' => 'danger',
-                                default => 'secondary',
-                            };
-                        @endphp
-                        <span class="badge bg-{{ $badge }}">{{ __($booking->status) }}</span>
+                        @php $bs = $booking->getStatusBadgeStyle(); @endphp
+                        <span class="badge" style="background:{{ $bs['bg'] }};color:{{ $bs['color'] }};">{{ __($booking->status) }}</span>
                     </td>
                     <td>
                         <a href="{{ route('booking.detail', $booking->id) }}" class="btn btn-sm btn-success">

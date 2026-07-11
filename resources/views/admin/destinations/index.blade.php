@@ -36,7 +36,7 @@
             <td><i class="bi bi-star-fill" style="color:#f59e0b;font-size:0.8rem;"></i> {{ number_format($d->rating, 1) }}</td>
             <td><span class="badge" style="{{ $d->is_active ? 'background:#d1fae5;color:#065f46;' : 'background:#fee2e2;color:#991b1b;' }}">{{ $d->is_active ? __('Aktif') : __('Nonaktif') }}</span></td>
             <td>
-                <button class="btn btn-sm btn-outline-gray" onclick="openEdit('{{ route('admin.destinations.update', $d) }}', '{{ $d->name }}', '{{ $d->category }}', '{{ $d->location }}', '{{ $d->rating }}', {{ $d->is_active ? 'true' : 'false' }}, '{{ addslashes($d->description ?? '') }}')"><i class="bi bi-pencil"></i></button>
+                <button class="btn btn-sm btn-outline-gray" data-url="{{ route('admin.destinations.update', $d) }}" data-name="{{ $d->name }}" data-category="{{ $d->category }}" data-location="{{ $d->location }}" data-rating="{{ $d->rating }}" data-is-active="{{ $d->is_active ? '1' : '0' }}" data-description="{{ addslashes($d->description ?? '') }}" onclick="openEdit(this)"><i class="bi bi-pencil"></i></button>
                 <form method="POST" action="{{ route('admin.destinations.destroy', $d) }}" class="d-inline" data-confirm="{{ __('Hapus destinasi?') }}">@csrf @method('DELETE')<button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
             </td>
         </tr>
@@ -113,14 +113,14 @@
 
 @push('scripts')
 <script>
-function openEdit(url, name, category, location, rating, isActive, description) {
-    document.getElementById('editForm').action = url;
-    document.getElementById('editName').value = name;
-    document.getElementById('editCategory').value = category;
-    document.getElementById('editLocation').value = location;
-    document.getElementById('editRating').value = rating;
-    document.getElementById('editIsActive').checked = isActive;
-    document.getElementById('editDescription').value = description;
+function openEdit(btn) {
+    document.getElementById('editForm').action = btn.dataset.url;
+    document.getElementById('editName').value = btn.dataset.name;
+    document.getElementById('editCategory').value = btn.dataset.category;
+    document.getElementById('editLocation').value = btn.dataset.location;
+    document.getElementById('editRating').value = btn.dataset.rating;
+    document.getElementById('editIsActive').checked = btn.dataset.isActive === '1';
+    document.getElementById('editDescription').value = btn.dataset.description;
     new bootstrap.Modal(document.getElementById('editModal')).show();
 }
 </script>

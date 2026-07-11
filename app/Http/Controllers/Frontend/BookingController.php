@@ -17,9 +17,9 @@ class BookingController extends Controller
 {
     public function create()
     {
-        $services = Service::where('is_active', true)->get();
-        $cars = Car::where('is_active', true)->get();
-        $packages = TourPackage::where('is_active', true)->get();
+        $services = Service::active()->get();
+        $cars = Car::active()->get();
+        $packages = TourPackage::active()->get();
         return view('customer.booking.create', compact('services', 'cars', 'packages'));
     }
 
@@ -30,8 +30,8 @@ class BookingController extends Controller
             'car_id' => 'required|exists:cars,id',
             'start_date' => 'required|date|after_or_equal:today',
             'duration_days' => 'required|integer|min:1',
-            'pickup_location' => 'nullable|string',
-            'pickup_time' => 'nullable',
+            'pickup_location' => 'nullable|string|max:255',
+            'pickup_time' => 'nullable|date_format:H:i',
             'tour_package_id' => 'nullable|exists:tour_packages,id',
             'notes' => 'nullable|string',
         ]);
@@ -40,7 +40,7 @@ class BookingController extends Controller
         $endDate = date('Y-m-d', strtotime($data['start_date'] . ' + ' . ($data['duration_days'] - 1) . ' days'));
 
         $isOverlapping = Booking::where('car_id', $data['car_id'])
-            ->whereIn('status', ['pending', 'waiting_payment', 'confirmed', 'in_progress'])
+            ->whereIn('status', Booking::ACTIVE_STATUSES)
             ->where('start_date', '<=', $endDate)
             ->where('end_date', '>=', $data['start_date'])
             ->exists();
@@ -85,7 +85,7 @@ class BookingController extends Controller
     public function payment($id)
     {
         $booking = Booking::with(['car', 'service', 'tourPackage'])->findOrFail($id);
-        $banks = Bank::where('is_active', true)->get();
+        $banks = Bank::active()->get();
 
         if ($booking->customer_id !== Auth::guard('customer')->id()) {
             abort(403);

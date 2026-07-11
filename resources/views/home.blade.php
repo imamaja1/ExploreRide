@@ -55,10 +55,6 @@
 </section>
 @endif
 
-@php
-    $categoryLabels = $activeCategories->pluck('name', 'slug')->toArray();
-@endphp
-
 @foreach($activeCategories as $cat)
     @if(isset($destinations[$cat->slug]) && $destinations[$cat->slug]->count() > 0)
     <section class="py-5 {{ $loop->even ? '' : '' }}" style="{{ $loop->even ? 'background: var(--gray-50);' : '' }}">

@@ -14,36 +14,35 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $services = Service::where('is_active', true)->get();
-        $destinations = Destination::where('is_active', true)->get()->groupBy('category');
-        $activeCategories = DestinationCategory::where('is_active', true)->get();
+        $services = Service::active()->get();
+        $destinations = Destination::active()->get()->groupBy('category');
+        $activeCategories = DestinationCategory::active()->get();
+        $categoryLabels = $activeCategories->pluck('name', 'slug')->toArray();
         $activeSlugs = $activeCategories->pluck('slug')->toArray();
         $destinations = collect($activeSlugs)->mapWithKeys(function ($slug) use ($destinations) {
             return [$slug => $destinations->get($slug, collect())];
         })->filter()->all();
-        $packages = TourPackage::where('is_active', true)->latest()->take(4)->get();
-        $testimonials = Testimonial::where('is_active', true)->latest()->take(6)->get();
-        return view('home', compact('services', 'destinations', 'packages', 'testimonials', 'activeCategories'));
+        $packages = TourPackage::active()->latest()->take(4)->get();
+        $testimonials = Testimonial::active()->latest()->take(6)->get();
+        return view('home', compact('services', 'destinations', 'packages', 'testimonials', 'activeCategories', 'categoryLabels'));
     }
 
     public function cars()
     {
-        $services = Service::where('is_active', true)->get();
-        $cars = Car::where('is_active', true)->paginate(12);
-        return view('cars', compact('cars', 'services'));
+        $cars = Car::active()->paginate(12);
+        return view('cars', compact('cars'));
     }
 
     public function packages()
     {
-        $packages = TourPackage::where('is_active', true)->paginate(12);
+        $packages = TourPackage::active()->paginate(12);
         return view('packages', compact('packages'));
     }
 
     public function carDetail($id)
     {
         $car = Car::findOrFail($id);
-        $services = Service::where('is_active', true)->get();
-        return view('car-detail', compact('car', 'services'));
+        return view('car-detail', compact('car'));
     }
 
     public function packageDetail($slug)
@@ -54,13 +53,13 @@ class HomeController extends Controller
 
     public function destinationDetail($slug)
     {
-        $destination = Destination::where('slug', $slug)->where('is_active', true)->firstOrFail();
+        $destination = Destination::where('slug', $slug)->active()->firstOrFail();
         return view('destination-detail', compact('destination'));
     }
 
     public function destinationsByCategory($category)
     {
-        $destinations = Destination::where('category', $category)->where('is_active', true)->paginate(12);
+        $destinations = Destination::where('category', $category)->active()->paginate(12);
         return view('destinations', compact('destinations', 'category'));
     }
 }

@@ -19,18 +19,8 @@
                     <div class="row mb-3">
                         <div class="col-sm-4 text-muted">{{ __('Status') }}</div>
                         <div class="col-sm-8">
-                            @php
-                                $badge = match($booking->status) {
-                                    'pending' => 'warning',
-                                    'waiting_payment' => 'info',
-                                    'confirmed' => 'success',
-                                    'in_progress' => 'primary',
-                                    'completed' => 'secondary',
-                                    'cancelled' => 'danger',
-                                    default => 'secondary',
-                                };
-                            @endphp
-                            <span class="badge bg-{{ $badge }}">{{ __($booking->status) }}</span>
+                            @php $bs = $booking->getStatusBadgeStyle(); @endphp
+                            <span class="badge" style="background:{{ $bs['bg'] }};color:{{ $bs['color'] }};">{{ __($booking->status) }}</span>
                         </div>
                     </div>
                     <div class="row mb-3">

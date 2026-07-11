@@ -26,8 +26,8 @@
                         <td>{{ $booking->car?->brand }} {{ $booking->car?->name }}</td>
                         <td>{{ $booking->start_date }} ({{ $booking->duration_days }} {{ __('hari') }})</td>
                         <td>
-                            @php $b = match($booking->status) { 'confirmed' => 'success', 'in_progress' => 'primary', 'completed' => 'secondary', default => 'warning' }; @endphp
-                            <span class="badge bg-{{ $b }}">{{ __($booking->status) }}</span>
+                            @php $bs = $booking->getStatusBadgeStyle(); @endphp
+                            <span class="badge" style="background:{{ $bs['bg'] }};color:{{ $bs['color'] }};">{{ __($booking->status) }}</span>
                         </td>
                         <td>
                             @if($booking->status == 'confirmed')

@@ -163,18 +163,8 @@
                         <td>{{ $booking->customer?->name ?? '-' }}</td>
                         <td>{{ $booking->car?->name ?? $booking->tourPackage?->name ?? '-' }}</td>
                         <td>
-                            @php
-                                $b = match($booking->status) {
-                                    'pending' => 'background:#f3f4f6; color:#374151;',
-                                    'waiting_payment' => 'background:#fef3c7; color:#92400e;',
-                                    'confirmed' => 'background:#dbeafe; color:#1e40af;',
-                                    'in_progress' => 'background:#ede9fe; color:#5b21b6;',
-                                    'completed' => 'background:#d1fae5; color:#065f46;',
-                                    'cancelled' => 'background:#fee2e2; color:#991b1b;',
-                                    default => 'background:#f3f4f6; color:#374151;',
-                                };
-                            @endphp
-                            <span class="badge" style="{{ $b }}">{{ __($booking->status) }}</span>
+                            @php $bs = $booking->getStatusBadgeStyle(); @endphp
+                            <span class="badge" style="background:{{ $bs['bg'] }};color:{{ $bs['color'] }};">{{ __($booking->status) }}</span>
                         </td>
                         <td>{{ $booking->driver?->name ?? '-' }}</td>
                         <td><a href="{{ route('admin.bookings.show', $booking) }}" class="btn btn-sm btn-outline-gray">{{ __('Detail') }}</a></td>

@@ -21,4 +21,9 @@ class Bank extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

@@ -29,4 +29,9 @@ class Customer extends Authenticatable
     {
         return $this->hasMany(Booking::class);
     }
+
+    public function testimonials()
+    {
+        return $this->hasMany(Testimonial::class);
+    }
 }

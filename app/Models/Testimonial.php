@@ -22,4 +22,9 @@ class Testimonial extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
+    }
 }

@@ -40,18 +40,8 @@
             <td>{{ $b->start_date->format('d/m/Y') }} - {{ $b->end_date->format('d/m/Y') }}</td>
             <td>Rp {{ number_format($b->total_price, 0, ',', '.') }}</td>
             <td>
-                @php
-                    $badgeStyle = match($b->status) {
-                        'pending' => 'background:#f3f4f6;color:#374151;',
-                        'waiting_payment' => 'background:#fef3c7;color:#92400e;',
-                        'confirmed' => 'background:#dbeafe;color:#1e40af;',
-                        'in_progress' => 'background:#ede9fe;color:#5b21b6;',
-                        'completed' => 'background:#d1fae5;color:#065f46;',
-                        'cancelled' => 'background:#fee2e2;color:#991b1b;',
-                        default => 'background:#f3f4f6;color:#374151;',
-                    };
-                @endphp
-                <span class="badge" style="{{ $badgeStyle }}">{{ __($b->status) }}</span>
+                @php $bs = $b->getStatusBadgeStyle(); @endphp
+                <span class="badge" style="background:{{ $bs['bg'] }};color:{{ $bs['color'] }};">{{ __($b->status) }}</span>
             </td>
             <td><a href="{{ route('admin.bookings.show', $b) }}" class="btn btn-sm btn-outline-gray"><i class="bi bi-eye"></i></a></td>
         </tr>

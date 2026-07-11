@@ -11,7 +11,7 @@ class TestimonialController extends Controller
 {
     public function index(Request $request)
     {
-        $testimonials = Testimonial::with('customer');
+        $testimonials = Testimonial::query();
 
         if ($request->filled('search')) {
             $search = $request->search;

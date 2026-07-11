@@ -14,7 +14,7 @@ class BookingController extends Controller
 {
     public function index(Request $request)
     {
-        $bookings = Booking::with(['customer', 'car', 'service', 'driver']);
+        $bookings = Booking::with(['customer', 'car', 'service', 'driver', 'tourPackage']);
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -78,6 +78,11 @@ class BookingController extends Controller
         $data = $request->validate([
             'driver_id' => 'required|exists:users,id',
         ]);
+
+        $driver = User::where('id', $data['driver_id'])->where('role', 'driver')->where('is_active', true)->first();
+        if (!$driver) {
+            return back()->withErrors(['driver_id' => __('Driver tidak valid atau tidak aktif.')]);
+        }
 
         $booking = Booking::with(['car', 'customer'])->findOrFail($id);
 

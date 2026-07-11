@@ -24,19 +24,19 @@ class DestinationController extends Controller
         }
 
         $destinations = $destinations->latest()->paginate(10)->withQueryString();
-        $categories = DestinationCategory::where('is_active', true)->get();
+        $categories = DestinationCategory::active()->get();
         return view('admin.destinations.index', compact('destinations', 'categories'));
     }
 
     public function create()
     {
-        $categories = DestinationCategory::where('is_active', true)->get();
+        $categories = DestinationCategory::active()->get();
         return view('admin.destinations.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        $categorySlugs = DestinationCategory::where('is_active', true)->pluck('slug')->toArray();
+        $categorySlugs = DestinationCategory::active()->pluck('slug')->toArray();
 
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:destinations,name',
@@ -62,13 +62,13 @@ class DestinationController extends Controller
 
     public function edit(Destination $destination)
     {
-        $categories = DestinationCategory::where('is_active', true)->get();
+        $categories = DestinationCategory::active()->get();
         return view('admin.destinations.edit', compact('destination', 'categories'));
     }
 
     public function update(Request $request, Destination $destination)
     {
-        $categorySlugs = DestinationCategory::where('is_active', true)->pluck('slug')->toArray();
+        $categorySlugs = DestinationCategory::active()->pluck('slug')->toArray();
 
         $data = $request->validate([
             'name' => 'required|string|max:255|unique:destinations,name,' . $destination->id,
