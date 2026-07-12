@@ -8,7 +8,7 @@ use App\Notifications\Channels\WhatsAppChannel;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DriverAssigned extends Notification
+class BookingCreated extends Notification
 {
     public function __construct(public Booking $booking) {}
 
@@ -23,40 +23,31 @@ class DriverAssigned extends Notification
 
     public function toWhatsApp(object $notifiable): string
     {
-        $customerName = $this->booking->customer?->name ?? '-';
         $carInfo = $this->booking->car
             ? $this->booking->car->brand.' '.$this->booking->car->name
             : '-';
-        $plateNumber = $this->booking->car?->plate_number ?? '-';
 
-        return "*ExploreRide - Penugasan Driver*\n\n"
+        return "*ExploreRide - Booking Baru*\n\n"
             ."Halo {$notifiable->name}!\n\n"
-            ."Anda ditugaskan untuk pesanan berikut:\n"
+            ."Booking Anda telah dibuat.\n"
             ."Kode Booking: {$this->booking->booking_code}\n"
-            ."Pelanggan: {$customerName}\n"
             ."Mobil: {$carInfo}\n"
-            ."Plat Nomor: {$plateNumber}\n"
             ."Tanggal: {$this->booking->start_date} - {$this->booking->end_date}\n"
-            .'Lokasi Jemput: '.($this->booking->pickup_location ?? '-')."\n"
-            .'Jam Jemput: '.($this->booking->pickup_time ?? '-')."\n\n"
-            .'Silakan hubungi pelanggan untuk koordinasi.';
+            .'Total: Rp '.number_format($this->booking->total_price, 0, ',', '.')."\n\n"
+            .'Silakan lakukan pembayaran untuk melanjutkan pesanan.';
     }
 
     public function toMail(object $notifiable): MailMessage
     {
-        $customerName = $this->booking->customer?->name ?? '-';
         $carInfo = $this->booking->car
             ? $this->booking->car->brand.' '.$this->booking->car->name
             : '-';
-        $plateNumber = $this->booking->car?->plate_number ?? '-';
 
         return (new MailMessage)
-            ->subject('ExploreRide - Penugasan Driver')
-            ->view('emails.driver-assigned', [
-                'recipientName' => $notifiable->name,
-                'customerName' => $customerName,
+            ->subject('ExploreRide - Booking Baru')
+            ->view('emails.booking-created', [
+                'customerName' => $notifiable->name,
                 'carInfo' => $carInfo,
-                'plateNumber' => $plateNumber,
                 'booking' => $this->booking,
             ]);
     }

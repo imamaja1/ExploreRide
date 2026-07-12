@@ -6,7 +6,7 @@
 |---|---|
 | **Nama Produk** | ExploreRide |
 | **Platform** | Web-based App (Laravel + Blade) |
-| **Tech Stack** | Laravel 11, Blade, SSE, Bootstrap 5, Chart.js, AOS.js, SweetAlert2, kstmostofa/laravel-whatsapp |
+| **Tech Stack** | Laravel 13, Blade, SSE, Bootstrap 5, Chart.js, AOS.js, SweetAlert2, kstmostofa/laravel-whatsapp |
 | **Product Manager** | Nazmi |
 | **Status** | Draft / Ready for Review |
 

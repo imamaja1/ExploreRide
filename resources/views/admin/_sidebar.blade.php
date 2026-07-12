@@ -48,6 +48,12 @@
     <a class="sidebar-item {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
         <i class="bi bi-sliders"></i> {{ __('Kontak & Sosmed') }}
     </a>
+    <a class="sidebar-item {{ request()->routeIs('admin.whatsapp.*') ? 'active' : '' }}" href="{{ route('admin.whatsapp.index') }}">
+        <i class="bi bi-whatsapp"></i> {{ __('WhatsApp API') }}
+    </a>
+    <a class="sidebar-item {{ request()->routeIs('admin.email.*') ? 'active' : '' }}" href="{{ route('admin.email.index') }}">
+        <i class="bi bi-envelope"></i> {{ __('Notifikasi Email') }}
+    </a>
 </div>
 
 <div class="sidebar-divider"></div>

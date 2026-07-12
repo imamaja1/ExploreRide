@@ -7,7 +7,7 @@
 | **Nama Produk** | ExploreRide |
 | **Modul** | Homepage (Discovery Layer) |
 | **Platform** | Web-based App (Laravel + Blade) |
-| **Tech Stack** | Laravel 11, Blade, Bootstrap 5, AOS.js, SweetAlert2 |
+| **Tech Stack** | Laravel 13, Blade, Bootstrap 5, AOS.js, SweetAlert2 |
 | **Product Manager** | Nazmi |
 | **Status** | Final |
 

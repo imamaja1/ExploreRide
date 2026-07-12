@@ -54,7 +54,7 @@
                                 {{ __($booking->payment->status) }}
                             </span>
                             @if($booking->payment->proof_photo)
-                                <br><a href="{{ asset('storage/' . $booking->payment->proof_photo) }}" target="_blank" class="small">{{ __('Lihat Bukti Transfer') }}</a>
+                                <br><a href="{{ Storage::url($booking->payment->proof_photo) }}" target="_blank" class="small">{{ __('Lihat Bukti Transfer') }}</a>
                             @endif
                         </div>
                     </div>
@@ -83,54 +83,3 @@
     </div>
 </div>
 @endsection
-
-@push('scripts')
-<script>
-    if (typeof EventSource !== 'undefined') {
-        const evtSource = new EventSource("{{ route('sse.booking', $booking->id) }}");
-        evtSource.addEventListener('update', function(e) {
-            const data = JSON.parse(e.data);
-            if (data.driver) {
-                const container = document.getElementById('driverInfo');
-                container.innerHTML = '';
-
-                const alert = document.createElement('div');
-                alert.className = 'alert alert-success';
-
-                const title = document.createElement('h5');
-                title.innerHTML = '<i class="bi bi-person-badge"></i> {{ __("Sopir Ditugaskan") }}';
-                alert.appendChild(title);
-
-                const nameLabel = document.createElement('p');
-                nameLabel.className = 'mb-1';
-                const nameStrong = document.createElement('strong');
-                nameStrong.textContent = '{{ __("Nama:") }} ';
-                nameLabel.appendChild(nameStrong);
-                nameLabel.appendChild(document.createTextNode(data.driver.name));
-                alert.appendChild(nameLabel);
-
-                const phoneLabel = document.createElement('p');
-                phoneLabel.className = 'mb-1';
-                const phoneStrong = document.createElement('strong');
-                phoneStrong.textContent = '{{ __("No. HP:") }} ';
-                phoneLabel.appendChild(phoneStrong);
-                phoneLabel.appendChild(document.createTextNode(data.driver.phone));
-                alert.appendChild(phoneLabel);
-
-                const plateLabel = document.createElement('p');
-                plateLabel.className = 'mb-0';
-                const plateStrong = document.createElement('strong');
-                plateStrong.textContent = '{{ __("Plat Nomor:") }} ';
-                plateLabel.appendChild(plateStrong);
-                plateLabel.appendChild(document.createTextNode(data.driver.plate_number));
-                alert.appendChild(plateLabel);
-
-                container.appendChild(alert);
-            }
-        });
-        evtSource.addEventListener('error', function() {
-            evtSource.close();
-        });
-    }
-</script>
-@endpush

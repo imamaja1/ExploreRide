@@ -8,7 +8,7 @@ use App\Notifications\Channels\WhatsAppChannel;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class DriverAssigned extends Notification
+class BookingCancelled extends Notification
 {
     public function __construct(public Booking $booking) {}
 
@@ -27,19 +27,16 @@ class DriverAssigned extends Notification
         $carInfo = $this->booking->car
             ? $this->booking->car->brand.' '.$this->booking->car->name
             : '-';
-        $plateNumber = $this->booking->car?->plate_number ?? '-';
 
-        return "*ExploreRide - Penugasan Driver*\n\n"
+        return "*ExploreRide - Pesanan Dibatalkan*\n\n"
             ."Halo {$notifiable->name}!\n\n"
-            ."Anda ditugaskan untuk pesanan berikut:\n"
+            ."Pesanan berikut telah dibatalkan:\n"
             ."Kode Booking: {$this->booking->booking_code}\n"
             ."Pelanggan: {$customerName}\n"
             ."Mobil: {$carInfo}\n"
-            ."Plat Nomor: {$plateNumber}\n"
             ."Tanggal: {$this->booking->start_date} - {$this->booking->end_date}\n"
-            .'Lokasi Jemput: '.($this->booking->pickup_location ?? '-')."\n"
-            .'Jam Jemput: '.($this->booking->pickup_time ?? '-')."\n\n"
-            .'Silakan hubungi pelanggan untuk koordinasi.';
+            .'Total: Rp '.number_format($this->booking->total_price, 0, ',', '.')."\n\n"
+            .'Hubungi admin untuk informasi lebih lanjut.';
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -48,15 +45,13 @@ class DriverAssigned extends Notification
         $carInfo = $this->booking->car
             ? $this->booking->car->brand.' '.$this->booking->car->name
             : '-';
-        $plateNumber = $this->booking->car?->plate_number ?? '-';
 
         return (new MailMessage)
-            ->subject('ExploreRide - Penugasan Driver')
-            ->view('emails.driver-assigned', [
+            ->subject('ExploreRide - Pesanan Dibatalkan')
+            ->view('emails.booking-cancelled', [
                 'recipientName' => $notifiable->name,
                 'customerName' => $customerName,
                 'carInfo' => $carInfo,
-                'plateNumber' => $plateNumber,
                 'booking' => $this->booking,
             ]);
     }

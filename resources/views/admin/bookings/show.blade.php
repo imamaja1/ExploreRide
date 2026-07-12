@@ -128,7 +128,7 @@
                 @if($booking->payment->proof_photo)
                 <div class="mb-2">
                     <small class="text-muted">{{ __('Bukti Transfer') }}</small>
-                    <a href="{{ asset('storage/' . $booking->payment->proof_photo) }}" target="_blank" class="btn btn-sm btn-outline-success d-block mt-1">
+                    <a href="{{ Storage::url($booking->payment->proof_photo) }}" target="_blank" class="btn btn-sm btn-outline-success d-block mt-1">
                         <i class="bi bi-image"></i> {{ __('Lihat Bukti') }}
                     </a>
                 </div>

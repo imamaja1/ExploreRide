@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Service;
 use App\Models\Bank;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -14,17 +15,19 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Admin ExploreRide',
             'email' => 'admin@exploreride.com',
-            'password' => 'password',
+            'password' => Hash::make('password'),
             'role' => 'admin',
+            'whatsapp' => '6285941208706',
             'is_active' => true,
         ]);
 
         User::create([
             'name' => 'Driver 1',
             'email' => 'driver1@exploreride.com',
-            'password' => 'password',
+            'password' => Hash::make('password'),
             'role' => 'driver',
             'phone' => '081234567890',
+            'whatsapp' => '6285941208706',
             'is_active' => true,
         ]);
 

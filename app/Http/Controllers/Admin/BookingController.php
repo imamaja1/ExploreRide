@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
 use App\Models\User;
+use App\Notifications\BookingCancelled;
 use App\Notifications\BookingConfirmed;
 use App\Notifications\DriverAssigned;
 use Illuminate\Http\Request;
@@ -18,11 +19,11 @@ class BookingController extends Controller
 
         if ($request->filled('search')) {
             $search = addcslashes($request->search, '%_');
-            $bookings->where(function($q) use ($search) {
+            $bookings->where(function ($q) use ($search) {
                 $q->where('booking_code', 'like', "%{$search}%")
-                  ->orWhereHas('customer', function($q2) use ($search) {
-                      $q2->where('name', 'like', "%{$search}%");
-                  });
+                    ->orWhereHas('customer', function ($q2) use ($search) {
+                        $q2->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -41,6 +42,7 @@ class BookingController extends Controller
     {
         $booking = Booking::with(['customer', 'car', 'service', 'tourPackage', 'driver', 'payment.bank'])->findOrFail($id);
         $drivers = User::where('role', 'driver')->where('is_active', true)->get();
+
         return view('admin.bookings.show', compact('booking', 'drivers'));
     }
 
@@ -52,7 +54,7 @@ class BookingController extends Controller
             return back()->withErrors(['status' => __('Hanya pesanan dengan status menunggu pembayaran yang bisa dikonfirmasi.')]);
         }
 
-        if (!$booking->payment) {
+        if (! $booking->payment) {
             return back()->withErrors(['payment' => __('Bukti pembayaran belum diupload.')]);
         }
 
@@ -68,6 +70,11 @@ class BookingController extends Controller
             if ($booking->customer) {
                 $booking->customer->notify(new BookingConfirmed($booking));
             }
+
+            $admins = User::where('role', 'admin')->where('id', '!=', auth()->id())->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new BookingConfirmed($booking));
+            }
         });
 
         return redirect()->back()->with('success', 'Pembayaran dikonfirmasi! Notifikasi terkirim ke pelanggan.');
@@ -80,13 +87,13 @@ class BookingController extends Controller
         ]);
 
         $driver = User::where('id', $data['driver_id'])->where('role', 'driver')->where('is_active', true)->first();
-        if (!$driver) {
+        if (! $driver) {
             return back()->withErrors(['driver_id' => __('Driver tidak valid atau tidak aktif.')]);
         }
 
         $booking = Booking::with(['car', 'customer'])->findOrFail($id);
 
-        if (!in_array($booking->status, ['confirmed', 'pending'])) {
+        if (! in_array($booking->status, ['confirmed', 'pending'])) {
             return back()->withErrors(['status' => __('Hanya pesanan yang sudah dikonfirmasi atau pending yang bisa ditugaskan driver.')]);
         }
 
@@ -100,20 +107,38 @@ class BookingController extends Controller
             if ($driver) {
                 $driver->notify(new DriverAssigned($booking));
             }
+
+            if ($booking->customer) {
+                $booking->customer->notify(new DriverAssigned($booking));
+            }
+
+            $admins = User::where('role', 'admin')->where('id', '!=', auth()->id())->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new DriverAssigned($booking));
+            }
         });
 
-        return redirect()->back()->with('success', 'Sopir berhasil ditugaskan! Notifikasi terkirim ke driver.');
+        return redirect()->back()->with('success', 'Sopir berhasil ditugaskan! Notifikasi terkirim ke driver dan pelanggan.');
     }
 
     public function cancel(Request $request, $id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with(['customer', 'car'])->findOrFail($id);
 
         if (in_array($booking->status, ['completed', 'cancelled'])) {
             return back()->withErrors(['status' => __('Pesanan yang sudah selesai atau dibatalkan tidak bisa diubah.')]);
         }
 
         $booking->forceFill(['status' => 'cancelled'])->save();
+
+        if ($booking->customer) {
+            $booking->customer->notify(new BookingCancelled($booking));
+        }
+
+        $admins = User::where('role', 'admin')->where('id', '!=', auth()->id())->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new BookingCancelled($booking));
+        }
 
         return redirect()->back()->with('success', 'Pesanan dibatalkan');
     }

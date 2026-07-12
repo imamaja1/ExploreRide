@@ -20,8 +20,9 @@ use App\Http\Controllers\Driver\DashboardController as DriverDashboardController
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\BookingController as FrontendBookingController;
 use App\Http\Controllers\Frontend\TestimonialController as FrontendTestimonialController;
+use App\Http\Controllers\Admin\EmailSettingController;
+use App\Http\Controllers\Admin\WhatsAppSettingController;
 use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\Frontend\SseController;
 
 // ========== CUSTOMER AUTH ==========
 Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('customer.login');
@@ -57,11 +58,6 @@ Route::middleware(['customer.auth'])->group(function () {
     Route::get('/bookings', [FrontendBookingController::class, 'myBookings'])->name('booking.my');
 });
 
-// ========== SSE ==========
-Route::middleware(['customer.auth'])->group(function () {
-    Route::get('/sse/booking/{id}', [SseController::class, 'stream'])->name('sse.booking');
-});
-
 // ========== ADMIN AUTH ==========
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->middleware('throttle:5,1');
@@ -89,6 +85,20 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
     Route::post('bookings/{id}/confirm-payment', [BookingController::class, 'confirmPayment'])->name('bookings.confirm-payment');
     Route::post('bookings/{id}/assign-driver', [BookingController::class, 'assignDriver'])->name('bookings.assign-driver');
     Route::post('bookings/{id}/cancel', [BookingController::class, 'cancel'])->name('bookings.cancel');
+
+    // WhatsApp API Settings
+    Route::get('whatsapp', [WhatsAppSettingController::class, 'index'])->name('whatsapp.index');
+    Route::put('whatsapp', [WhatsAppSettingController::class, 'update'])->name('whatsapp.update');
+    Route::post('whatsapp/register', [WhatsAppSettingController::class, 'register'])->name('whatsapp.register');
+    Route::post('whatsapp/generate-key', [WhatsAppSettingController::class, 'generateKey'])->name('whatsapp.generate-key');
+    Route::post('whatsapp/check-status', [WhatsAppSettingController::class, 'checkStatus'])->name('whatsapp.check-status');
+    Route::get('whatsapp/qr-image', [WhatsAppSettingController::class, 'qrImage'])->name('whatsapp.qr-image');
+    Route::post('whatsapp/test-send', [WhatsAppSettingController::class, 'testSend'])->name('whatsapp.test-send');
+
+    // Email Settings
+    Route::get('email', [EmailSettingController::class, 'index'])->name('email.index');
+    Route::put('email', [EmailSettingController::class, 'update'])->name('email.update');
+    Route::post('email/test-send', [EmailSettingController::class, 'testSend'])->name('email.test-send');
 });
 
 // ========== DRIVER AUTH ==========

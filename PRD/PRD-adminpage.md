@@ -7,7 +7,7 @@
 | **Nama Produk** | ExploreRide |
 | **Modul** | Admin Panel |
 | **Platform** | Web-based App (Laravel + Blade) |
-| **Tech Stack** | Laravel 11, Blade, Bootstrap 5.3, Chart.js, MySQL |
+| **Tech Stack** | Laravel 13, Blade, Bootstrap 5.3, Chart.js, MySQL |
 | **Product Manager** | Nazmi |
 | **Status** | Final |
 

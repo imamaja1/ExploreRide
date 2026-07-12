@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Bank;
 use App\Models\Booking;
 use App\Models\Car;
 use App\Models\Service;
 use App\Models\TourPackage;
-use App\Models\Bank;
+use App\Models\User;
+use App\Notifications\BookingCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class BookingController extends Controller
@@ -20,6 +23,7 @@ class BookingController extends Controller
         $services = Service::active()->get();
         $cars = Car::active()->get();
         $packages = TourPackage::active()->get();
+
         return view('customer.booking.create', compact('services', 'cars', 'packages'));
     }
 
@@ -37,18 +41,18 @@ class BookingController extends Controller
         ]);
 
         $car = Car::findOrFail($data['car_id']);
-        $endDate = date('Y-m-d', strtotime($data['start_date'] . ' + ' . ($data['duration_days'] - 1) . ' days'));
+        $endDate = date('Y-m-d', strtotime($data['start_date'].' + '.($data['duration_days'] - 1).' days'));
 
         $totalPrice = $car->price_per_day * $data['duration_days'];
 
-        if (!empty($data['tour_package_id'])) {
+        if (! empty($data['tour_package_id'])) {
             $package = TourPackage::findOrFail($data['tour_package_id']);
             $totalPrice = $car->price_per_day * $data['duration_days'] + $package->price;
         }
 
-        $bookingCode = 'EXP-' . strtoupper(Str::random(8));
+        $bookingCode = 'EXP-'.strtoupper(Str::random(8));
         while (Booking::where('booking_code', $bookingCode)->exists()) {
-            $bookingCode = 'EXP-' . strtoupper(Str::random(8));
+            $bookingCode = 'EXP-'.strtoupper(Str::random(8));
         }
 
         try {
@@ -85,6 +89,20 @@ class BookingController extends Controller
             return back()->withErrors(['car_id' => $e->getMessage()])->withInput();
         }
 
+        try {
+            $customer = Auth::guard('customer')->user();
+            if ($customer) {
+                $customer->notify(new BookingCreated($booking));
+            }
+
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new BookingCreated($booking));
+            }
+        } catch (\Exception $e) {
+            Log::error('WA notification failed after booking create: '.$e->getMessage());
+        }
+
         return redirect()->route('booking.payment', $booking->id);
     }
 
@@ -112,7 +130,7 @@ class BookingController extends Controller
             return back()->withErrors(['proof_photo' => __('Bukti transfer sudah diupload sebelumnya.')]);
         }
 
-        if (!in_array($booking->status, ['pending', 'waiting_payment'])) {
+        if (! in_array($booking->status, ['pending', 'waiting_payment'])) {
             return back()->withErrors(['status' => __('Status pesanan tidak memungkinkan untuk upload pembayaran.')]);
         }
 
@@ -139,10 +157,23 @@ class BookingController extends Controller
                 'account_name' => $data['account_name'],
                 'proof_photo' => $path,
             ]);
-            $booking->payment()->first()->forceFill(['status' => 'pending'])->save();
 
             $booking->forceFill(['status' => 'waiting_payment'])->save();
         });
+
+        try {
+            $customer = Auth::guard('customer')->user();
+            if ($customer) {
+                $customer->notify(new BookingCreated($booking));
+            }
+
+            $admins = User::where('role', 'admin')->get();
+            foreach ($admins as $admin) {
+                $admin->notify(new BookingCreated($booking));
+            }
+        } catch (\Exception $e) {
+            Log::error('WA notification failed after payment upload: '.$e->getMessage());
+        }
 
         return redirect()->route('booking.detail', $booking->id)->with('success', 'Bukti transfer berhasil diupload!');
     }
