@@ -58,7 +58,7 @@
     "Daftar Sekarang": "Register Now",
     "Edit": "Edit",
     "Mulai": "Start",
-    "Selesai": "Finish",
+    "Selesai": "Completed",
     "Lihat Bukti Transfer": "View Transfer Proof",
     "Nama Lengkap": "Full Name",
     "Email": "Email",
@@ -144,7 +144,6 @@
     "Total Tugas": "Total Tasks",
     "Dikonfirmasi": "Confirmed",
     "Berjalan": "Ongoing",
-    "Selesai": "Completed",
     "Kode": "Code",
     "Pelanggan": "Customer",
     "Status": "Status",
@@ -232,7 +231,6 @@
     "Total Bayar:": "Total Payment:",
     "Kode Booking:": "Booking Code:",
     "Batalkan pesanan ini?": "Cancel this booking?",
-    "Destinasi": "Destinations",
     "Tambah Destinasi": "Add Destination",
     "Edit Destinasi": "Edit Destination",
     "Kategori": "Category",
@@ -295,7 +293,6 @@
     "Jumlah": "Amount",
     "Bank Tujuan": "Destination Bank",
     "Tanggal Selesai": "End Date",
-    "Jam Jemput": "Pickup Time",
     "Driver Ditugaskan": "Driver Assigned",
     "Terverifikasi": "Verified",
     "Menunggu": "Awaiting",
@@ -310,5 +307,8 @@
     "Ya, konfirmasi!": "Yes, confirm!",
     "Ya, batalkan!": "Yes, cancel!",
     "Yakin?": "Are you sure?",
-    "Profil": "Profile"
+    "Profil": "Profile",
+    "Email atau password salah atau akun belum aktif": "Invalid email or password or inactive account",
+    "Akun Anda telah dinonaktifkan. Hubungi admin.": "Your account has been deactivated. Contact admin.",
+    "Akses ditolak. Akun ini bukan akun driver.": "Access denied. This is not a driver account."
 }

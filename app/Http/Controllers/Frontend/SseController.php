@@ -21,7 +21,7 @@ class SseController extends Controller
         $response = new StreamedResponse(function () use ($id) {
             $lastStatus = null;
             $lastDriverId = null;
-            $maxIterations = 1500;
+            $maxIterations = 150;
             $iterations = 0;
 
             while ($iterations++ < $maxIterations) {

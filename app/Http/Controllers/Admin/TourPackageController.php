@@ -16,7 +16,7 @@ class TourPackageController extends Controller
         $packages = TourPackage::withCount('destinations');
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = addcslashes($request->search, '%_');
             $packages->where('name', 'like', "%{$search}%");
         }
 

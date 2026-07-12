@@ -46,7 +46,7 @@ class DashboardController extends Controller
         $startDate = now()->subDays(6)->startOfDay();
         $dailyCounts = Booking::where('created_at', '>=', $startDate)
             ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->groupBy('DATE(created_at)')
+            ->groupByRaw('DATE(created_at)')
             ->pluck('count', 'date');
 
         $dailyLabels = [];

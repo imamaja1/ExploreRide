@@ -5,8 +5,16 @@
 <div class="card"><div class="card-body p-0">
 <div class="table-responsive">
 <table class="table table-hover mb-0">
+    <caption class="d-none">{{ __('Riwayat tugas pengemudi') }}</caption>
     <thead class="table-light">
-        <tr><th>{{ __('Kode') }}</th><th>{{ __('Pelanggan') }}</th><th>{{ __('Mobil') }}</th><th>{{ __('Tanggal') }}</th><th>{{ __('Total') }}</th><th>{{ __('Status') }}</th></tr>
+        <tr>
+            <th scope="col">{{ __('Kode') }}</th>
+            <th scope="col">{{ __('Pelanggan') }}</th>
+            <th scope="col">{{ __('Mobil') }}</th>
+            <th scope="col">{{ __('Tanggal') }}</th>
+            <th scope="col">{{ __('Total') }}</th>
+            <th scope="col">{{ __('Status') }}</th>
+        </tr>
     </thead>
     <tbody>
         @forelse($bookings as $booking)

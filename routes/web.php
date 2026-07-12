@@ -50,9 +50,9 @@ Route::post('/testimonials', [FrontendTestimonialController::class, 'store'])->n
 
 Route::middleware(['customer.auth'])->group(function () {
     Route::get('/booking', [FrontendBookingController::class, 'create'])->name('booking.create');
-    Route::post('/booking', [FrontendBookingController::class, 'store'])->name('booking.store');
+    Route::post('/booking', [FrontendBookingController::class, 'store'])->name('booking.store')->middleware('throttle:10,1');
     Route::get('/booking/{id}/payment', [FrontendBookingController::class, 'payment'])->name('booking.payment');
-    Route::post('/booking/{id}/payment', [FrontendBookingController::class, 'uploadPayment'])->name('booking.payment.upload');
+    Route::post('/booking/{id}/payment', [FrontendBookingController::class, 'uploadPayment'])->name('booking.payment.upload')->middleware('throttle:5,1');
     Route::get('/booking/{id}', [FrontendBookingController::class, 'detail'])->name('booking.detail');
     Route::get('/bookings', [FrontendBookingController::class, 'myBookings'])->name('booking.my');
 });

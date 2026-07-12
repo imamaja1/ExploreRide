@@ -14,7 +14,7 @@ class TestimonialController extends Controller
         $testimonials = Testimonial::query();
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = addcslashes($request->search, '%_');
             $testimonials->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('message', 'like', "%{$search}%");

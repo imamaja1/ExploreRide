@@ -11,7 +11,7 @@ class DriverMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user() || !$request->user()->isDriver()) {
-            abort(403, 'Akses hanya untuk Driver');
+            abort(403, __('Akses hanya untuk Driver'));
         }
         return $next($request);
     }

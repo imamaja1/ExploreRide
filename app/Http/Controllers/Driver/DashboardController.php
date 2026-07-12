@@ -30,7 +30,7 @@ class DashboardController extends Controller
 
     public function bookings()
     {
-        $bookings = Booking::with(['customer', 'car', 'service'])
+        $bookings = Booking::with(['customer', 'car'])
             ->where('driver_id', auth()->id())
             ->orderBy('created_at', 'desc')
             ->paginate(10);
@@ -57,8 +57,8 @@ class DashboardController extends Controller
             return back()->withErrors(['status' => __('Transisi status tidak valid.')]);
         }
 
-        $booking->update(['status' => $data['status']]);
+        $booking->forceFill(['status' => $data['status']])->save();
 
-        return redirect()->back()->with('success', 'Status berhasil diupdate');
+        return redirect()->back()->with('success', __('Status berhasil diupdate'));
     }
 }

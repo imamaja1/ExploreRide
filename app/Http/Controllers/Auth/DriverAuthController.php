@@ -20,12 +20,21 @@ class DriverAuthController extends Controller
             'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials) && Auth::user()->isDriver() && Auth::user()->is_active) {
-            return redirect()->intended('/driver/dashboard');
+        if (!Auth::attempt($credentials)) {
+            return back()->withErrors(['email' => __('Email atau password salah')])->withInput();
         }
 
-        Auth::logout();
-        return back()->withErrors(['email' => 'Email atau password salah'])->withInput();
+        if (!Auth::user()->isDriver()) {
+            Auth::logout();
+            return back()->withErrors(['email' => __('Akses ditolak. Akun ini bukan akun driver.')])->withInput();
+        }
+
+        if (!Auth::user()->is_active) {
+            Auth::logout();
+            return back()->withErrors(['email' => __('Akun Anda telah dinonaktifkan. Hubungi admin.')])->withInput();
+        }
+
+        return redirect()->intended('/driver/dashboard');
     }
 
     public function logout()

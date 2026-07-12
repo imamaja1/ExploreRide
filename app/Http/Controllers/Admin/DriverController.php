@@ -15,7 +15,7 @@ class DriverController extends Controller
         $drivers = User::where('role', 'driver');
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = addcslashes($request->search, '%_');
             $drivers->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
@@ -51,10 +51,12 @@ class DriverController extends Controller
         }
 
         $data['password'] = Hash::make($data['password']);
-        $data['role'] = 'driver';
-        $data['is_active'] = $request->boolean('is_active', true);
 
-        User::create($data);
+        $user = User::create($data);
+        $user->forceFill([
+            'role' => 'driver',
+            'is_active' => $request->boolean('is_active', true),
+        ])->save();
 
         return redirect()->back()->with('success', __('Driver berhasil ditambahkan'));
     }
@@ -91,9 +93,10 @@ class DriverController extends Controller
             unset($data['password']);
         }
 
-        $data['is_active'] = $request->boolean('is_active', true);
-
         $driver->update($data);
+        $driver->forceFill([
+            'is_active' => $request->boolean('is_active', true),
+        ])->save();
 
         return redirect()->back()->with('success', __('Driver berhasil diupdate'));
     }

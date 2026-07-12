@@ -1,8 +1,8 @@
 @extends('layouts.admin')
 @section('title', __('Edit Mobil'))
 @section('content')
-<div class="page-header mb-4">
-    <h4 >{{ __('Edit Mobil') }}</h4>
+<div class="page-header">
+    <h4>{{ __('Edit Mobil') }}</h4>
 </div>
 <div class="card">
     <div class="card-body">
@@ -10,12 +10,14 @@
             @csrf @method('PUT')
             <div class="row g-3">
                 <div class="col-md-4">
-                    <label class="form-label">{{ __('Nama Mobil') }}</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name', $car->name) }}" required>
+                    <label class="form-label">{{ __('Nama Mobil') }} <span class="text-danger">*</span></label>
+                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $car->name) }}" required>
+                    @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label">{{ __('Merek') }}</label>
-                    <input type="text" name="brand" class="form-control" value="{{ old('brand', $car->brand) }}" required>
+                    <label class="form-label">{{ __('Merek') }} <span class="text-danger">*</span></label>
+                    <input type="text" name="brand" class="form-control @error('brand') is-invalid @enderror" value="{{ old('brand', $car->brand) }}" required>
+                    @error('brand') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-4">
                     <label class="form-label">{{ __('Model') }}</label>
@@ -26,8 +28,9 @@
                     <input type="number" name="year" class="form-control" value="{{ old('year', $car->year) }}">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">{{ __('Plat Nomor') }}</label>
-                    <input type="text" name="plate_number" class="form-control" value="{{ old('plate_number', $car->plate_number) }}" required>
+                    <label class="form-label">{{ __('Plat Nomor') }} <span class="text-danger">*</span></label>
+                    <input type="text" name="plate_number" class="form-control @error('plate_number') is-invalid @enderror" value="{{ old('plate_number', $car->plate_number) }}" required>
+                    @error('plate_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">{{ __('Warna') }}</label>
@@ -52,8 +55,9 @@
                     <input type="number" name="seats" class="form-control" value="{{ old('seats', $car->seats) }}" min="1">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label">{{ __('Harga/Hari') }}</label>
-                    <input type="number" name="price_per_day" class="form-control" value="{{ old('price_per_day', $car->price_per_day) }}" required>
+                    <label class="form-label">{{ __('Harga/Hari') }} <span class="text-danger">*</span></label>
+                    <input type="number" name="price_per_day" class="form-control @error('price_per_day') is-invalid @enderror" value="{{ old('price_per_day', $car->price_per_day) }}" required>
+                    @error('price_per_day') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">{{ __('Foto') }}</label>
@@ -61,11 +65,12 @@
                     @if($car->main_photo) <small class="text-muted">{{ __('Biarkan kosong jika tidak ingin ganti foto') }}</small> @endif
                 </div>
                 <div class="col-12">
+                    <label class="form-label">{{ __('Deskripsi') }}</label>
                     <textarea name="description" class="form-control" rows="3">{{ old('description', $car->description) }}</textarea>
                 </div>
                 <div class="col-12">
-                    <div class="form-check">
-                        <input type="checkbox" name="is_active" class="form-check-input" id="is_active" value="1" {{ old('is_active', $car->is_active) ? 'checked' : '' }}>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" name="is_active" id="is_active" value="1" {{ old('is_active', $car->is_active) ? 'checked' : '' }}>
                         <label class="form-check-label" for="is_active">{{ __('Aktif') }}</label>
                     </div>
                 </div>

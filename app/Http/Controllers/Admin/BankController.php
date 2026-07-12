@@ -14,7 +14,7 @@ class BankController extends Controller
         $banks = Bank::query();
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = addcslashes($request->search, '%_');
             $banks->where(function($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('account_number', 'like', "%{$search}%")

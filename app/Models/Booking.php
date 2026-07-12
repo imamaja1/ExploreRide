@@ -22,7 +22,7 @@ class Booking extends Model
     protected $fillable = [
         'booking_code', 'customer_id', 'car_id', 'service_id', 'tour_package_id',
         'start_date', 'end_date', 'duration_days', 'pickup_location', 'dropoff_location',
-        'pickup_time', 'total_price', 'status', 'driver_id', 'notes',
+        'pickup_time', 'notes', 'total_price', 'status', 'driver_id',
     ];
 
     protected function casts(): array

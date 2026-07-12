@@ -39,16 +39,6 @@ class BookingController extends Controller
         $car = Car::findOrFail($data['car_id']);
         $endDate = date('Y-m-d', strtotime($data['start_date'] . ' + ' . ($data['duration_days'] - 1) . ' days'));
 
-        $isOverlapping = Booking::where('car_id', $data['car_id'])
-            ->whereIn('status', Booking::ACTIVE_STATUSES)
-            ->where('start_date', '<=', $endDate)
-            ->where('end_date', '>=', $data['start_date'])
-            ->exists();
-
-        if ($isOverlapping) {
-            return back()->withErrors(['car_id' => __('Mobil ini sudah dipesan pada tanggal tersebut. Silakan pilih tanggal lain.')])->withInput();
-        }
-
         $totalPrice = $car->price_per_day * $data['duration_days'];
 
         if (!empty($data['tour_package_id'])) {
@@ -61,23 +51,39 @@ class BookingController extends Controller
             $bookingCode = 'EXP-' . strtoupper(Str::random(8));
         }
 
-        $booking = DB::transaction(function () use ($data, $endDate, $totalPrice, $bookingCode) {
-            return Booking::create([
-                'booking_code' => $bookingCode,
-                'customer_id' => Auth::guard('customer')->id(),
-                'car_id' => $data['car_id'],
-                'service_id' => $data['service_id'],
-                'tour_package_id' => $data['tour_package_id'] ?? null,
-                'start_date' => $data['start_date'],
-                'end_date' => $endDate,
-                'duration_days' => $data['duration_days'],
-                'pickup_location' => $data['pickup_location'] ?? null,
-                'pickup_time' => $data['pickup_time'] ?? null,
-                'total_price' => $totalPrice,
-                'status' => 'pending',
-                'notes' => $data['notes'] ?? null,
-            ]);
-        });
+        try {
+            $booking = DB::transaction(function () use ($data, $endDate, $totalPrice, $bookingCode, $car) {
+                Car::where('id', $car->id)->lockForUpdate()->first();
+
+                $isOverlapping = Booking::where('car_id', $car->id)
+                    ->whereIn('status', Booking::ACTIVE_STATUSES)
+                    ->where('start_date', '<=', $endDate)
+                    ->where('end_date', '>=', $data['start_date'])
+                    ->exists();
+
+                if ($isOverlapping) {
+                    throw new \Exception(__('Mobil ini sudah dipesan pada tanggal tersebut.'));
+                }
+
+                return Booking::create([
+                    'booking_code' => $bookingCode,
+                    'car_id' => $data['car_id'],
+                    'service_id' => $data['service_id'],
+                    'tour_package_id' => $data['tour_package_id'] ?? null,
+                    'start_date' => $data['start_date'],
+                    'end_date' => $endDate,
+                    'duration_days' => $data['duration_days'],
+                    'pickup_location' => $data['pickup_location'] ?? null,
+                    'pickup_time' => $data['pickup_time'] ?? null,
+                    'notes' => $data['notes'] ?? null,
+                    'customer_id' => Auth::guard('customer')->id(),
+                    'total_price' => $totalPrice,
+                    'status' => 'pending',
+                ]);
+            });
+        } catch (\Exception $e) {
+            return back()->withErrors(['car_id' => $e->getMessage()])->withInput();
+        }
 
         return redirect()->route('booking.payment', $booking->id);
     }
@@ -132,10 +138,10 @@ class BookingController extends Controller
                 'account_number' => $bank->account_number,
                 'account_name' => $data['account_name'],
                 'proof_photo' => $path,
-                'status' => 'pending',
             ]);
+            $booking->payment()->first()->forceFill(['status' => 'pending'])->save();
 
-            $booking->update(['status' => 'waiting_payment']);
+            $booking->forceFill(['status' => 'waiting_payment'])->save();
         });
 
         return redirect()->route('booking.detail', $booking->id)->with('success', 'Bukti transfer berhasil diupload!');

@@ -8,8 +8,11 @@ class Payment extends Model
 {
     protected $fillable = [
         'booking_id', 'amount', 'method', 'bank_id', 'bank_name',
-        'account_number', 'account_name', 'proof_photo', 'status',
-        'verified_by', 'verified_at', 'notes',
+        'account_number', 'account_name', 'proof_photo', 'notes',
+    ];
+
+    protected $guarded = [
+        'id', 'status', 'verified_by', 'verified_at',
     ];
 
     protected function casts(): array

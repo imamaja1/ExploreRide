@@ -17,7 +17,7 @@ class BookingController extends Controller
         $bookings = Booking::with(['customer', 'car', 'service', 'driver', 'tourPackage']);
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = addcslashes($request->search, '%_');
             $bookings->where(function($q) use ($search) {
                 $q->where('booking_code', 'like', "%{$search}%")
                   ->orWhereHas('customer', function($q2) use ($search) {
@@ -57,13 +57,13 @@ class BookingController extends Controller
         }
 
         DB::transaction(function () use ($booking) {
-            $booking->payment->update([
+            $booking->payment->forceFill([
                 'status' => 'verified',
                 'verified_by' => auth()->id(),
                 'verified_at' => now(),
-            ]);
+            ])->save();
 
-            $booking->update(['status' => 'confirmed']);
+            $booking->forceFill(['status' => 'confirmed'])->save();
 
             if ($booking->customer) {
                 $booking->customer->notify(new BookingConfirmed($booking));
@@ -91,10 +91,10 @@ class BookingController extends Controller
         }
 
         DB::transaction(function () use ($booking, $data) {
-            $booking->update([
+            $booking->forceFill([
                 'driver_id' => $data['driver_id'],
                 'status' => 'confirmed',
-            ]);
+            ])->save();
 
             $driver = User::find($data['driver_id']);
             if ($driver) {
@@ -113,7 +113,7 @@ class BookingController extends Controller
             return back()->withErrors(['status' => __('Pesanan yang sudah selesai atau dibatalkan tidak bisa diubah.')]);
         }
 
-        $booking->update(['status' => 'cancelled']);
+        $booking->forceFill(['status' => 'cancelled'])->save();
 
         return redirect()->back()->with('success', 'Pesanan dibatalkan');
     }

@@ -30,15 +30,17 @@ class GoogleSocialiteController extends Controller
         }
 
         $customer = Customer::where('google_id', $googleUser->getId())
-            ->orWhere('email', $email)
             ->first();
 
         if ($customer) {
-            if (!$customer->google_id) {
-                $customer->update(['google_id' => $googleUser->getId(), 'avatar' => $customer->avatar ?? $googleUser->getAvatar()]);
-            }
             Auth::guard('customer')->login($customer);
             return redirect()->intended('/');
+        }
+
+        $existingCustomer = Customer::where('email', $email)->first();
+        if ($existingCustomer) {
+            return redirect()->route('customer.login')
+                ->withErrors(['email' => 'Akun dengan email ini sudah ada. Silakan login dengan password terlebih dahulu, lalu hubungkan Google di pengaturan.']);
         }
 
         $customer = Customer::create([

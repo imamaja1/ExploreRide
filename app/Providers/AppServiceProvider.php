@@ -24,5 +24,9 @@ class AppServiceProvider extends ServiceProvider
                 'siteSettings'  => Setting::pluck('value', 'key')->toArray(),
             ]);
         });
+
+        if (config('laravel-whatsapp.ui.enabled')) {
+            config(['laravel-whatsapp.ui.middleware' => ['web', 'auth', 'admin']]);
+        }
     }
 }
