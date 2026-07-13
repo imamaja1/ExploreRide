@@ -20,8 +20,8 @@
                         <input type="email" name="email" class="form-control" id="registerEmail" required>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-semibold" for="registerPhone">{{ __('No. Telepon') }}</label>
-                        <input type="text" name="phone" class="form-control" id="registerPhone">
+                        <label class="form-label fw-semibold" for="registerPhone">{{ __('No. WhatsApp') }}</label>
+                        <input type="text" name="phone" class="form-control" id="registerPhone" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold" for="registerPassword">{{ __('Password') }}</label>
@@ -54,36 +54,62 @@
 document.getElementById('registerForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
     var btn = document.getElementById('registerBtn');
+    var btnText = btn.innerHTML;
     btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
     var errorDiv = document.getElementById('registerError');
+    errorDiv.textContent = '';
     errorDiv.classList.add('d-none');
+
+    var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
     fetch('{{ route("customer.register") }}', {
         method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         body: new URLSearchParams(new FormData(this))
-    }).then(function(r) { return r.json(); }).then(function(data) {
-        if (data.success) {
+    }).then(function(r) {
+        if (r.status === 419) {
+            return r.text().then(function() {
+                errorDiv.textContent = '{{ __("Sesi habis. Halaman akan direfresh...") }}';
+                errorDiv.classList.remove('d-none');
+                setTimeout(function() { location.reload(); }, 1500);
+                throw new Error('csrf');
+            });
+        }
+        if (r.status === 429) {
+            return r.text().then(function() {
+                errorDiv.textContent = '{{ __("Terlalu banyak percobaan. Silakan tunggu 1 menit.") }}';
+                errorDiv.classList.remove('d-none');
+                btn.disabled = false; btn.innerHTML = btnText;
+                throw new Error('throttle');
+            });
+        }
+        return r.json().then(function(data) { return { status: r.status, data: data }; });
+    }).then(function(result) {
+        if (result.data.success) {
             location.reload();
         } else {
-            if (data.errors) {
-                errorDiv.textContent = '';
-                Object.values(data.errors).flat().forEach(function(msg) {
+            if (result.data.errors) {
+                Object.values(result.data.errors).flat().forEach(function(msg) {
                     var p = document.createElement('div');
                     p.textContent = msg;
                     errorDiv.appendChild(p);
                 });
             } else {
-                errorDiv.textContent = data.message || '{{ __("Email atau password salah") }}';
+                errorDiv.textContent = result.data.message || '{{ __("Pendaftaran gagal. Silakan coba lagi.") }}';
             }
             errorDiv.classList.remove('d-none');
-            btn.disabled = false; btn.innerHTML = '{{ __("Daftar") }}';
+            btn.disabled = false; btn.innerHTML = btnText;
         }
-    }).catch(function() {
-        errorDiv.textContent = '{{ __("Email atau password salah") }}';
+    }).catch(function(err) {
+        if (err.message === 'csrf' || err.message === 'throttle') return;
+        errorDiv.textContent = '{{ __("Gagal terhubung ke server. Periksa koneksi internet Anda.") }}';
         errorDiv.classList.remove('d-none');
-        btn.disabled = false; btn.innerHTML = '{{ __("Daftar") }}';
+        btn.disabled = false; btn.innerHTML = btnText;
     });
 });
 </script>

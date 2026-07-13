@@ -28,7 +28,7 @@ use App\Http\Controllers\LanguageController;
 Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('customer.login');
 Route::post('/login', [CustomerAuthController::class, 'login'])->middleware('throttle:5,1');
 Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');
-Route::post('/register', [CustomerAuthController::class, 'register'])->middleware('throttle:3,1');
+Route::post('/register', [CustomerAuthController::class, 'register'])->middleware('throttle:10,1')->name('customer.register');
 Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
 
 // Google OAuth

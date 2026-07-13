@@ -46,27 +46,54 @@
 document.getElementById('loginForm')?.addEventListener('submit', function(e) {
     e.preventDefault();
     var btn = document.getElementById('loginBtn');
+    var btnText = btn.innerHTML;
     btn.disabled = true; btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span>';
 
     var errorDiv = document.getElementById('loginError');
+    errorDiv.textContent = '';
     errorDiv.classList.add('d-none');
+
+    var csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
     fetch('{{ route("customer.login") }}', {
         method: 'POST',
-        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/x-www-form-urlencoded' },
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-TOKEN': csrfToken,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
         body: new URLSearchParams(new FormData(this))
-    }).then(function(r) { return r.json(); }).then(function(data) {
-        if (data.success) {
+    }).then(function(r) {
+        if (r.status === 419) {
+            return r.text().then(function() {
+                errorDiv.textContent = '{{ __("Sesi habis. Halaman akan direfresh...") }}';
+                errorDiv.classList.remove('d-none');
+                setTimeout(function() { location.reload(); }, 1500);
+                throw new Error('csrf');
+            });
+        }
+        if (r.status === 429) {
+            return r.text().then(function() {
+                errorDiv.textContent = '{{ __("Terlalu banyak percobaan. Silakan tunggu 1 menit.") }}';
+                errorDiv.classList.remove('d-none');
+                btn.disabled = false; btn.innerHTML = btnText;
+                throw new Error('throttle');
+            });
+        }
+        return r.json().then(function(data) { return { status: r.status, data: data }; });
+    }).then(function(result) {
+        if (result.data.success) {
             location.reload();
         } else {
-            errorDiv.textContent = data.message || '{{ __("Email atau password salah") }}';
+            errorDiv.textContent = result.data.message || '{{ __("Email atau password salah") }}';
             errorDiv.classList.remove('d-none');
-            btn.disabled = false; btn.innerHTML = '{{ __("Masuk") }}';
+            btn.disabled = false; btn.innerHTML = btnText;
         }
-    }).catch(function() {
-        errorDiv.textContent = '{{ __("Email atau password salah") }}';
+    }).catch(function(err) {
+        if (err.message === 'csrf' || err.message === 'throttle') return;
+        errorDiv.textContent = '{{ __("Gagal terhubung ke server. Periksa koneksi internet Anda.") }}';
         errorDiv.classList.remove('d-none');
-        btn.disabled = false; btn.innerHTML = '{{ __("Masuk") }}';
+        btn.disabled = false; btn.innerHTML = btnText;
     });
 });
 </script>
