@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
 
         $middleware->web(append: [
+            \App\Http\Middleware\ForceHttps::class,
             \App\Http\Middleware\LocalizationMiddleware::class,
             \App\Http\Middleware\SecurityHeaders::class,
         ]);
